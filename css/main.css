@@ -25,6 +25,7 @@ a {
 .local-nav-links {
   max-width: 1000px;
   margin: 0 auto;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
 }
@@ -51,4 +52,123 @@ a {
 
 .header-nav {
   border-bottom: 1px solid #ddd;
+}
+
+.scroll-section {
+  padding-top: 50vh;
+}
+
+#scroll-section-0 h1 {
+  font-size: 4rem;
+  text-align: center;
+}
+
+.main-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  height: 3em;
+}
+
+.main-message p {
+  line-height: 1.2;
+  font-weight: 900;
+  text-align: center;
+}
+
+.main-message small {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+#scroll-section-1 .description {
+  max-width: 1000px;
+  font-size: 1.2rem;
+  color: #888;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+#scroll-section-1 .description strong {
+  font-size: 3rem;
+  color: rgb(29, 29, 31);
+  float: left;
+  margin-right: 0.2em;
+}
+
+#scroll-section-2 .main-message {
+  font-size: 3.5rem;
+}
+
+#scroll-section-2 .description-message {
+  font-weight: 900;
+  width: 50%;
+}
+
+#scroll-section-2 .pin {
+  width: 1px;
+  height: 100px;
+  background: rgb(29, 29, 31);
+}
+
+#scroll-section-3 .mid-message {
+  color: #888;
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 0 1rem;
+  font-size: 2rem;
+}
+
+#scroll-section-3 .mid-message strong {
+  color: rgb(29, 29, 31);
+}
+
+#scroll-section-3 .canvas-caption {
+  color: #888;
+  margin: 0 auto;
+  padding: 0 1rem;
+  max-width: 1000px;
+  font-size: 1.2rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 7rem;
+  color: white;
+  background: darkorange;
+  font-weight: 900;
+}
+
+@media (min-width: 1024px) {
+  #scroll-section-0 h1 {
+    font-size: 9vw;
+  }
+  .main-message {
+    font-size: 4vw;
+  }
+  #scroll-section-1 .description {
+    font-size: 2rem;
+  }
+  #scroll-section-1 .description strong {
+    font-size: 6rem;
+  }
+  #scroll-section-2 .main-message {
+    font-size: 6vw;
+  }
+  .main-message small {
+    font-size: 1.5vw;
+  }
+  #scroll-section-2 .description-message {
+    width: 20%;
+  }
+  #scroll-section-3 .mid-message {
+    font-size: 4vw;
+  }
+  #scroll-section-3 .canvas-caption {
+    font-size: 2rem;
+  }
 }
