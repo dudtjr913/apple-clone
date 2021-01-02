@@ -21,6 +21,21 @@ a {
   color: rgb(29, 29, 31);
 }
 
+.main .sticky-elem {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: none;
+}
+
+body#scroll-scene-0 #scroll-section-0 .sticky-elem,
+body#scroll-scene-1 #scroll-section-1 .sticky-elem,
+body#scroll-scene-2 #scroll-section-2 .sticky-elem,
+body#scroll-scene-3 #scroll-section-3 .sticky-elem {
+  display: block;
+}
+
 .global-nav-links,
 .local-nav-links {
   max-width: 1000px;
