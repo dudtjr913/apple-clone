@@ -34,6 +34,19 @@
     },
   ];
 
+  const debounce = (func) => {
+    let start = 0;
+    return () => {
+      if (start) {
+        clearTimeout(start);
+      }
+      start = setTimeout(() => {
+        start = 0;
+        func();
+      }, 200);
+    };
+  };
+
   const setLayout = () => {
     sceneInfo.forEach((v) => {
       v.scrollHeight = v.heightMultiple * window.innerHeight;
@@ -41,5 +54,6 @@
     });
   };
 
+  window.addEventListener('resize', debounce(setLayout));
   setLayout();
 })();
