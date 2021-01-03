@@ -72,6 +72,8 @@
       if (currentScene === 0) return;
       currentScene--;
     }
+
+    document.body.id = `scroll-scene-${currentScene}`;
   };
 
   window.addEventListener('resize', debounce(setLayout));

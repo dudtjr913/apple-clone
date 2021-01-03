@@ -67,6 +67,10 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 
 .header-nav {
   border-bottom: 1px solid #ddd;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .scroll-section {
