@@ -10,6 +10,11 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-0'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+      },
+      values: {
+        opacity: [0, 1],
+        messageA_scope: [0.1, 0.2],
       },
     },
     {
@@ -84,6 +89,35 @@
       currentScene--;
       document.body.id = `scroll-scene-${currentScene}`;
     }
+
+    setAnimation();
+  };
+
+  const setAnimation = () => {
+    const objs = sceneInfo[currentScene].objs;
+    const values = sceneInfo[currentScene].values;
+    const currentHeight = sceneInfo[currentScene].scrollHeight;
+
+    switch (currentScene) {
+      case 0:
+        const ratio = getRatio(currentHeight, values.opacity);
+        objs.messageA.style.opacity = ratio;
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
+  };
+
+  const getRatio = (currentHeight, values) => {
+    const currentYOffset = yOffset - prevScrollHeight;
+    const difference = values[1] - values[0];
+    const ratio = (currentYOffset / currentHeight) * difference + values[0];
+
+    return ratio;
   };
 
   window.addEventListener('scroll', () => {

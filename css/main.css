@@ -88,6 +88,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   align-items: center;
   font-size: 2.5rem;
   height: 3em;
+  opacity: 0;
 }
 
 .main-message p {
