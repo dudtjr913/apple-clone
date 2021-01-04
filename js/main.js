@@ -13,8 +13,7 @@
         messageA: document.querySelector('#scroll-section-0 .main-message.a'),
       },
       values: {
-        opacity: [0, 1],
-        messageA_scope: [0.1, 0.2],
+        messageA_opacity: [0, 1, {start: 0.1, end: 0.2}],
       },
     },
     {
@@ -96,11 +95,11 @@
   const setAnimation = () => {
     const objs = sceneInfo[currentScene].objs;
     const values = sceneInfo[currentScene].values;
-    const currentHeight = sceneInfo[currentScene].scrollHeight;
+    const scene = sceneInfo[currentScene];
 
     switch (currentScene) {
       case 0:
-        const ratio = getRatio(currentHeight, values.opacity);
+        const ratio = getRatio(scene, values.messageA_opacity);
         objs.messageA.style.opacity = ratio;
         break;
       case 1:
@@ -112,12 +111,37 @@
     }
   };
 
-  const getRatio = (currentHeight, values) => {
+  const getRatio = (scene, values) => {
+    let rv;
     const currentYOffset = yOffset - prevScrollHeight;
-    const difference = values[1] - values[0];
-    const ratio = (currentYOffset / currentHeight) * difference + values[0];
+    const currentScrollHeight = scene.scrollHeight;
+    const ratio = currentYOffset / currentScrollHeight;
+    if (values.length === 3) {
+      rv = getPartRatio(currentYOffset, currentScrollHeight, values);
+    } else {
+      rv = ratio * (values[1] - values[0]) + values[0];
+    }
 
-    return ratio;
+    return rv;
+  };
+
+  const getPartRatio = (currentYOffset, currentScrollHeight, values) => {
+    const partStart = values[2].start * currentScrollHeight;
+    const partEnd = values[2].end * currentScrollHeight;
+    const partHeight = partEnd - partStart;
+
+    if (currentYOffset < partStart) {
+      return values[0];
+    }
+
+    if (currentYOffset > partEnd) {
+      return values[1];
+    }
+
+    return (
+      ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) +
+      values[0]
+    );
   };
 
   window.addEventListener('scroll', () => {
