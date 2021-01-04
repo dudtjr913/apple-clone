@@ -3,6 +3,7 @@
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
   let scrollRatio = 0;
+  let changeScene = false;
 
   const sceneInfo = [
     {
@@ -16,8 +17,8 @@
       values: {
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translateY_in: [20, 0, {start: 0.1, end: 0.2}],
-        messageA_opacity_out: [1, 0, {start: 0.25, end: 0.3}],
-        messageA_translateY_out: [0, -20, {start: 0.25, end: 0.3}],
+        messageA_opacity_out: [1, 0, {start: 0.2, end: 0.25}],
+        messageA_translateY_out: [0, -20, {start: 0.2, end: 0.25}],
       },
     },
     {
@@ -77,23 +78,26 @@
   };
 
   const setScrollLoop = () => {
+    changeScene = false;
     prevScrollHeight = 0;
     for (let i = 0; i < currentScene; i++) {
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
     if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      changeScene = true;
       currentScene++;
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
     if (yOffset < prevScrollHeight) {
       if (currentScene === 0) return;
+      changeScene = true;
       currentScene--;
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    setAnimation();
+    !changeScene && setAnimation();
   };
 
   const setAnimation = () => {
