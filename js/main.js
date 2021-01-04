@@ -2,6 +2,7 @@
   let currentScene = 0; // 현재 보고 있는 scene
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
+  let scrollRatio = 0;
 
   const sceneInfo = [
     {
@@ -13,7 +14,10 @@
         messageA: document.querySelector('#scroll-section-0 .main-message.a'),
       },
       values: {
-        messageA_opacity: [0, 1, {start: 0.1, end: 0.2}],
+        messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
+        messageA_translateY_in: [20, 0, {start: 0.1, end: 0.2}],
+        messageA_opacity_out: [1, 0, {start: 0.25, end: 0.3}],
+        messageA_translateY_out: [0, -20, {start: 0.25, end: 0.3}],
       },
     },
     {
@@ -99,8 +103,17 @@
 
     switch (currentScene) {
       case 0:
-        const ratio = getRatio(scene, values.messageA_opacity);
-        objs.messageA.style.opacity = ratio;
+        const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
+        const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
+        const messageA_translateY_in = getRatio(scene, values.messageA_translateY_in);
+        const messageA_translateY_out = getRatio(scene, values.messageA_translateY_out);
+        if (scrollRatio <= values.messageA_opacity_in[2].end) {
+          objs.messageA.style.opacity = messageA_opacity_in;
+          objs.messageA.style.transform = `translateY(${messageA_translateY_in}%)`;
+        } else {
+          objs.messageA.style.opacity = messageA_opacity_out;
+          objs.messageA.style.transform = `translateY(${messageA_translateY_out}%)`;
+        }
         break;
       case 1:
         break;
@@ -115,11 +128,11 @@
     let rv;
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
-    const ratio = currentYOffset / currentScrollHeight;
+    scrollRatio = currentYOffset / currentScrollHeight;
     if (values.length === 3) {
       rv = getPartRatio(currentYOffset, currentScrollHeight, values);
     } else {
-      rv = ratio * (values[1] - values[0]) + values[0];
+      rv = scrollRatio * (values[1] - values[0]) + values[0];
     }
 
     return rv;
@@ -138,10 +151,7 @@
       return values[1];
     }
 
-    return (
-      ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) +
-      values[0]
-    );
+    return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
   };
 
   window.addEventListener('scroll', () => {
