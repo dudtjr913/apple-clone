@@ -136,8 +136,8 @@
     }
 
     if (yOffset < prevScrollHeight) {
-      if (currentScene === 0) return;
       changeScene = true;
+      if (currentScene === 0) return;
       currentScene--;
       document.body.id = `scroll-scene-${currentScene}`;
     }
@@ -149,6 +149,9 @@
     const objs = sceneInfo[currentScene].objs;
     const values = sceneInfo[currentScene].values;
     const scene = sceneInfo[currentScene];
+    const currentYOffset = yOffset - prevScrollHeight;
+    const currentScrollHeight = scene.scrollHeight;
+    scrollRatio = currentYOffset / currentScrollHeight;
 
     switch (currentScene) {
       case 0:
@@ -200,6 +203,7 @@
           objs.messageD.style.transform = `translateY(${messageD_translateY_out}%)`;
         }
         break;
+
       case 2:
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
@@ -241,7 +245,11 @@
           objs.messageC.style.transform = `translateY(${messageC_translateY_out}%)`;
         }
         break;
+
       case 3:
+        break;
+
+      default:
         break;
     }
   };
@@ -250,7 +258,6 @@
     let rv;
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
-    scrollRatio = currentYOffset / currentScrollHeight;
     if (values.length === 3) {
       rv = getPartRatio(currentYOffset, currentScrollHeight, values);
     } else {
