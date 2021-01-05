@@ -195,6 +195,14 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   #scroll-section-2 .description-message {
     width: 20%;
   }
+  .description-message.b {
+    left: 53%;
+    top: 20%;
+  }
+  .description-message.c {
+    left: 55%;
+    top: 15%;
+  }
   #scroll-section-3 .mid-message {
     font-size: 4vw;
   }
