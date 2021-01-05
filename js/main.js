@@ -23,6 +23,9 @@
         totalImageCount: 300,
         imagesSrc: [],
         imageSequence: [0, 299],
+
+        canvas_opacity_out: [1, 0, {start: 0.9, end: 1}],
+
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.28}],
@@ -133,6 +136,9 @@
       }
     }
     document.body.id = `scroll-scene-${currentScene}`;
+
+    const heightRatio = window.innerHeight / 1080;
+    sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
   };
 
   const setScrollLoop = () => {
@@ -169,7 +175,9 @@
     switch (currentScene) {
       case 0:
         const currentImage = Math.round(getRatio(scene, values.imageSequence));
+        const canvasA_opacity_out = getRatio(scene, values.canvas_opacity_out);
         scene.objs.context.drawImage(scene.values.imagesSrc[currentImage], 0, 0);
+        objs.canvas.style.opacity = canvasA_opacity_out;
 
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
