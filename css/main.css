@@ -21,6 +21,15 @@ a {
   color: rgb(29, 29, 31);
 }
 
+.canvas {
+  position: fixed;
+  top: 96px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
 .main .sticky-elem {
   position: fixed;
   left: 0;

@@ -3,7 +3,12 @@
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
   let scrollRatio = 0;
+  let totalImageCount = 300; // 총 이미지 개수
   let changeScene = false;
+
+  const imagesSrc = []; // 모든 이미지가 담길 객체
+  const $canvasA = document.querySelector('#scroll-section-0 .canvas');
+  const context = $canvasA.getContext('2d');
 
   const sceneInfo = [
     {
@@ -99,6 +104,14 @@
         func();
       }, 200);
     };
+  };
+
+  const loadImages = () => {
+    for (let i = 0; i < totalImageCount; i++) {
+      const $imgElem = new Image();
+      $imgElem.src = `video/001/IMG_${6726 + i}.JPG`;
+      imagesSrc.push($imgElem);
+    }
   };
 
   const setLayout = () => {
@@ -283,10 +296,24 @@
     return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
   };
 
+  const setCanvasImage = () => {
+    const imageRatio = yOffset / (sceneInfo[0].scrollHeight - window.innerHeight);
+    if (imageRatio < 0) return;
+    if (imageRatio > 1) return;
+
+    const currentImage = Math.round((totalImageCount - 1) * imageRatio);
+    context.drawImage(imagesSrc[currentImage], 0, 0);
+  };
+
+  loadImages();
   window.addEventListener('scroll', () => {
     yOffset = window.pageYOffset;
     setScrollLoop();
+    setCanvasImage();
   });
   window.addEventListener('resize', debounce(setLayout));
-  window.addEventListener('load', setLayout);
+  window.addEventListener('load', () => {
+    setLayout();
+    context.drawImage(imagesSrc[0], 0, 0);
+  });
 })();
