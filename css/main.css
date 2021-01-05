@@ -21,22 +21,18 @@ a {
   color: rgb(29, 29, 31);
 }
 
-.canvas {
-  position: fixed;
-  top: 96px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
 .main .sticky-elem {
   position: fixed;
   left: 0;
   top: 35vh;
   width: 100%;
   display: none;
-  opacity: 0;
+}
+
+.sticky-elem.sticky-elem-canvas {
+  top: 0;
+  height: 100%;
+  z-index: -1;
 }
 
 body#scroll-scene-0 #scroll-section-0 .sticky-elem,
@@ -106,6 +102,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 .main-message {
   display: flex;
   justify-content: center;
+  opacity: 0;
   align-items: center;
   font-size: 2.5rem;
   height: 3em;
@@ -145,6 +142,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 #scroll-section-2 .description-message {
   font-weight: 900;
   width: 45%;
+  opacity: 0;
 }
 
 #scroll-section-2 .pin {

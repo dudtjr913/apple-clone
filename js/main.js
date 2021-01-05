@@ -3,12 +3,7 @@
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
   let scrollRatio = 0;
-  let totalImageCount = 300; // 총 이미지 개수
   let changeScene = false;
-
-  const imagesSrc = []; // 모든 이미지가 담길 객체
-  const $canvasA = document.querySelector('#scroll-section-0 .canvas');
-  const context = $canvasA.getContext('2d');
 
   const sceneInfo = [
     {
@@ -17,12 +12,17 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-0'),
+        canvas: document.querySelector('#canvas-0'),
+        context: document.querySelector('#canvas-0').getContext('2d'),
         messageA: document.querySelector('#scroll-section-0 .main-message.a'),
         messageB: document.querySelector('#scroll-section-0 .main-message.b'),
         messageC: document.querySelector('#scroll-section-0 .main-message.c'),
         messageD: document.querySelector('#scroll-section-0 .main-message.d'),
       },
       values: {
+        totalImageCount: 300,
+        imagesSrc: [],
+        imageSequence: [0, 299],
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.28}],
@@ -107,10 +107,10 @@
   };
 
   const loadImages = () => {
-    for (let i = 0; i < totalImageCount; i++) {
+    for (let i = 0; i < sceneInfo[0].values.totalImageCount; i++) {
       const $imgElem = new Image();
       $imgElem.src = `video/001/IMG_${6726 + i}.JPG`;
-      imagesSrc.push($imgElem);
+      sceneInfo[0].values.imagesSrc.push($imgElem);
     }
   };
 
@@ -168,6 +168,9 @@
 
     switch (currentScene) {
       case 0:
+        const currentImage = Math.round(getRatio(scene, values.imageSequence));
+        scene.objs.context.drawImage(scene.values.imagesSrc[currentImage], 0, 0);
+
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
           const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
@@ -296,24 +299,15 @@
     return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
   };
 
-  const setCanvasImage = () => {
-    const imageRatio = yOffset / (sceneInfo[0].scrollHeight - window.innerHeight);
-    if (imageRatio < 0) return;
-    if (imageRatio > 1) return;
-
-    const currentImage = Math.round((totalImageCount - 1) * imageRatio);
-    context.drawImage(imagesSrc[currentImage], 0, 0);
-  };
-
   loadImages();
+
   window.addEventListener('scroll', () => {
     yOffset = window.pageYOffset;
     setScrollLoop();
-    setCanvasImage();
   });
   window.addEventListener('resize', debounce(setLayout));
   window.addEventListener('load', () => {
     setLayout();
-    context.drawImage(imagesSrc[0], 0, 0);
+    sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
   });
 })();
