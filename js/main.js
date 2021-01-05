@@ -13,12 +13,30 @@
       objs: {
         container: document.querySelector('#scroll-section-0'),
         messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+        messageB: document.querySelector('#scroll-section-0 .main-message.b'),
+        messageC: document.querySelector('#scroll-section-0 .main-message.c'),
+        messageD: document.querySelector('#scroll-section-0 .main-message.d'),
       },
       values: {
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translateY_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.25}],
         messageA_translateY_out: [0, -20, {start: 0.2, end: 0.25}],
+
+        messageB_opacity_in: [0, 1, {start: 0.3, end: 0.4}],
+        messageB_translateY_in: [20, 0, {start: 0.3, end: 0.4}],
+        messageB_opacity_out: [1, 0, {start: 0.4, end: 0.45}],
+        messageB_translateY_out: [0, -20, {start: 0.4, end: 0.45}],
+
+        messageC_opacity_in: [0, 1, {start: 0.5, end: 0.6}],
+        messageC_translateY_in: [20, 0, {start: 0.5, end: 0.6}],
+        messageC_opacity_out: [1, 0, {start: 0.6, end: 0.65}],
+        messageC_translateY_out: [0, -20, {start: 0.6, end: 0.65}],
+
+        messageD_opacity_in: [0, 1, {start: 0.7, end: 0.8}],
+        messageD_translateY_in: [20, 0, {start: 0.7, end: 0.8}],
+        messageD_opacity_out: [1, 0, {start: 0.8, end: 0.85}],
+        messageD_translateY_out: [0, -20, {start: 0.8, end: 0.85}],
       },
     },
     {
@@ -107,16 +125,52 @@
 
     switch (currentScene) {
       case 0:
-        const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
-        const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
-        const messageA_translateY_in = getRatio(scene, values.messageA_translateY_in);
-        const messageA_translateY_out = getRatio(scene, values.messageA_translateY_out);
-        if (scrollRatio <= values.messageA_opacity_in[2].end) {
+        if (scrollRatio <= 0.2) {
+          const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
+          const messageA_translateY_in = getRatio(scene, values.messageA_translateY_in);
           objs.messageA.style.opacity = messageA_opacity_in;
           objs.messageA.style.transform = `translateY(${messageA_translateY_in}%)`;
         } else {
+          const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
+          const messageA_translateY_out = getRatio(scene, values.messageA_translateY_out);
           objs.messageA.style.opacity = messageA_opacity_out;
           objs.messageA.style.transform = `translateY(${messageA_translateY_out}%)`;
+        }
+
+        if (scrollRatio <= 0.4) {
+          const messageB_opacity_in = getRatio(scene, values.messageB_opacity_in);
+          const messageB_translateY_in = getRatio(scene, values.messageB_translateY_in);
+          objs.messageB.style.opacity = messageB_opacity_in;
+          objs.messageB.style.transform = `translateY(${messageB_translateY_in}%)`;
+        } else {
+          const messageB_opacity_out = getRatio(scene, values.messageB_opacity_out);
+          const messageB_translateY_out = getRatio(scene, values.messageB_translateY_out);
+          objs.messageB.style.opacity = messageB_opacity_out;
+          objs.messageB.style.transform = `translateY(${messageB_translateY_out}%)`;
+        }
+
+        if (scrollRatio <= 0.6) {
+          const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
+          const messageC_translateY_in = getRatio(scene, values.messageC_translateY_in);
+          objs.messageC.style.opacity = messageC_opacity_in;
+          objs.messageC.style.transform = `translateY(${messageC_translateY_in}%)`;
+        } else {
+          const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
+          const messageC_translateY_out = getRatio(scene, values.messageC_translateY_out);
+          objs.messageC.style.opacity = messageC_opacity_out;
+          objs.messageC.style.transform = `translateY(${messageC_translateY_out}%)`;
+        }
+
+        if (scrollRatio <= 0.8) {
+          const messageD_opacity_in = getRatio(scene, values.messageD_opacity_in);
+          const messageD_translateY_in = getRatio(scene, values.messageD_translateY_in);
+          objs.messageD.style.opacity = messageD_opacity_in;
+          objs.messageD.style.transform = `translateY(${messageD_translateY_in}%)`;
+        } else {
+          const messageD_opacity_out = getRatio(scene, values.messageD_opacity_out);
+          const messageD_translateY_out = getRatio(scene, values.messageD_translateY_out);
+          objs.messageD.style.opacity = messageD_opacity_out;
+          objs.messageD.style.transform = `translateY(${messageD_translateY_out}%)`;
         }
         break;
       case 1:
