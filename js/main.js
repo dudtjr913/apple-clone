@@ -289,4 +289,23 @@
   });
   window.addEventListener('resize', debounce(setLayout));
   window.addEventListener('load', setLayout);
+
+  const $videoElem = document.body.querySelector('video');
+
+  $videoElem.addEventListener('loadeddata', () => {
+    console.log('비디오 로딩 완료');
+    startVideoAnimation();
+  });
+
+  const startVideoAnimation = () => {
+    window.addEventListener('scroll', () => {
+      const videoRatio = yOffset / sceneInfo[0].scrollHeight;
+      if (videoRatio < 0) return;
+      if (videoRatio > 1) return;
+
+      requestAnimationFrame(() => {
+        $videoElem.currentTime = $videoElem.duration * videoRatio;
+      });
+    });
+  };
 })();
