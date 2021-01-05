@@ -19,24 +19,24 @@
       },
       values: {
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
-        messageA_translateY_in: [20, 0, {start: 0.1, end: 0.2}],
+        messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.28}],
-        messageA_translateY_out: [0, -20, {start: 0.2, end: 0.28}],
+        messageA_translate3d_out: [0, -20, {start: 0.2, end: 0.28}],
 
         messageB_opacity_in: [0, 1, {start: 0.3, end: 0.4}],
-        messageB_translateY_in: [20, 0, {start: 0.3, end: 0.4}],
+        messageB_translate3d_in: [20, 0, {start: 0.3, end: 0.4}],
         messageB_opacity_out: [1, 0, {start: 0.4, end: 0.48}],
-        messageB_translateY_out: [0, -20, {start: 0.4, end: 0.48}],
+        messageB_translate3d_out: [0, -20, {start: 0.4, end: 0.48}],
 
         messageC_opacity_in: [0, 1, {start: 0.5, end: 0.6}],
-        messageC_translateY_in: [20, 0, {start: 0.5, end: 0.6}],
+        messageC_translate3d_in: [20, 0, {start: 0.5, end: 0.6}],
         messageC_opacity_out: [1, 0, {start: 0.6, end: 0.68}],
-        messageC_translateY_out: [0, -20, {start: 0.6, end: 0.68}],
+        messageC_translate3d_out: [0, -20, {start: 0.6, end: 0.68}],
 
         messageD_opacity_in: [0, 1, {start: 0.7, end: 0.8}],
-        messageD_translateY_in: [20, 0, {start: 0.7, end: 0.8}],
+        messageD_translate3d_in: [20, 0, {start: 0.7, end: 0.8}],
         messageD_opacity_out: [1, 0, {start: 0.8, end: 0.88}],
-        messageD_translateY_out: [0, -20, {start: 0.8, end: 0.88}],
+        messageD_translate3d_out: [0, -20, {start: 0.8, end: 0.88}],
       },
     },
     {
@@ -60,22 +60,22 @@
       },
       values: {
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
-        messageA_translateY_in: [20, 0, {start: 0.1, end: 0.2}],
+        messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.28}],
-        messageA_translateY_out: [0, -20, {start: 0.2, end: 0.28}],
+        messageA_translate3d_out: [0, -20, {start: 0.2, end: 0.28}],
 
         messageB_opacity_in: [0, 1, {start: 0.3, end: 0.45}],
-        messageB_translateY_in: [20, 0, {start: 0.3, end: 0.45}],
+        messageB_translate3d_in: [20, 0, {start: 0.3, end: 0.45}],
         messageB_opacity_out: [1, 0, {start: 0.45, end: 0.58}],
-        messageB_translateY_out: [0, -20, {start: 0.45, end: 0.58}],
+        messageB_translate3d_out: [0, -20, {start: 0.45, end: 0.58}],
 
         messageC_opacity_in: [0, 1, {start: 0.65, end: 0.8}],
-        messageC_translateY_in: [20, 0, {start: 0.65, end: 0.8}],
+        messageC_translate3d_in: [20, 0, {start: 0.65, end: 0.8}],
         messageC_opacity_out: [1, 0, {start: 0.8, end: 0.93}],
-        messageC_translateY_out: [0, -20, {start: 0.8, end: 0.93}],
+        messageC_translate3d_out: [0, -20, {start: 0.8, end: 0.93}],
 
-        pinB_scaleY: [0.5, 1, {start: 0.3, end: 0.45}],
-        pinC_scaleY: [0.5, 1, {start: 0.65, end: 0.8}],
+        pinB_scale3d: [0.5, 1, {start: 0.3, end: 0.45}],
+        pinC_scale3d: [0.5, 1, {start: 0.65, end: 0.8}],
       },
     },
     {
@@ -157,92 +157,92 @@
       case 0:
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
-          const messageA_translateY_in = getRatio(scene, values.messageA_translateY_in);
+          const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
           objs.messageA.style.opacity = messageA_opacity_in;
-          objs.messageA.style.transform = `translateY(${messageA_translateY_in}%)`;
+          objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_in}%, 0)`;
         } else {
           const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
-          const messageA_translateY_out = getRatio(scene, values.messageA_translateY_out);
+          const messageA_translate3d_out = getRatio(scene, values.messageA_translate3d_out);
           objs.messageA.style.opacity = messageA_opacity_out;
-          objs.messageA.style.transform = `translateY(${messageA_translateY_out}%)`;
+          objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.4) {
           const messageB_opacity_in = getRatio(scene, values.messageB_opacity_in);
-          const messageB_translateY_in = getRatio(scene, values.messageB_translateY_in);
+          const messageB_translate3d_in = getRatio(scene, values.messageB_translate3d_in);
           objs.messageB.style.opacity = messageB_opacity_in;
-          objs.messageB.style.transform = `translateY(${messageB_translateY_in}%)`;
+          objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_in}%, 0)`;
         } else {
           const messageB_opacity_out = getRatio(scene, values.messageB_opacity_out);
-          const messageB_translateY_out = getRatio(scene, values.messageB_translateY_out);
+          const messageB_translate3d_out = getRatio(scene, values.messageB_translate3d_out);
           objs.messageB.style.opacity = messageB_opacity_out;
-          objs.messageB.style.transform = `translateY(${messageB_translateY_out}%)`;
+          objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.6) {
           const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
-          const messageC_translateY_in = getRatio(scene, values.messageC_translateY_in);
+          const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
           objs.messageC.style.opacity = messageC_opacity_in;
-          objs.messageC.style.transform = `translateY(${messageC_translateY_in}%)`;
+          objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
         } else {
           const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
-          const messageC_translateY_out = getRatio(scene, values.messageC_translateY_out);
+          const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
           objs.messageC.style.opacity = messageC_opacity_out;
-          objs.messageC.style.transform = `translateY(${messageC_translateY_out}%)`;
+          objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.8) {
           const messageD_opacity_in = getRatio(scene, values.messageD_opacity_in);
-          const messageD_translateY_in = getRatio(scene, values.messageD_translateY_in);
+          const messageD_translate3d_in = getRatio(scene, values.messageD_translate3d_in);
           objs.messageD.style.opacity = messageD_opacity_in;
-          objs.messageD.style.transform = `translateY(${messageD_translateY_in}%)`;
+          objs.messageD.style.transform = `translate3d(0, ${messageD_translate3d_in}%, 0)`;
         } else {
           const messageD_opacity_out = getRatio(scene, values.messageD_opacity_out);
-          const messageD_translateY_out = getRatio(scene, values.messageD_translateY_out);
+          const messageD_translate3d_out = getRatio(scene, values.messageD_translate3d_out);
           objs.messageD.style.opacity = messageD_opacity_out;
-          objs.messageD.style.transform = `translateY(${messageD_translateY_out}%)`;
+          objs.messageD.style.transform = `translate3d(0, ${messageD_translate3d_out}%, 0)`;
         }
         break;
 
       case 2:
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
-          const messageA_translateY_in = getRatio(scene, values.messageA_translateY_in);
+          const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
           objs.messageA.style.opacity = messageA_opacity_in;
-          objs.messageA.style.transform = `translateY(${messageA_translateY_in}%)`;
+          objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_in}%, 0)`;
         } else {
           const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
-          const messageA_translateY_out = getRatio(scene, values.messageA_translateY_out);
+          const messageA_translate3d_out = getRatio(scene, values.messageA_translate3d_out);
           objs.messageA.style.opacity = messageA_opacity_out;
-          objs.messageA.style.transform = `translateY(${messageA_translateY_out}%)`;
+          objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.45) {
           const messageB_opacity_in = getRatio(scene, values.messageB_opacity_in);
-          const messageB_translateY_in = getRatio(scene, values.messageB_translateY_in);
-          const pinB_scaleY = getRatio(scene, values.pinB_scaleY);
+          const messageB_translate3d_in = getRatio(scene, values.messageB_translate3d_in);
+          const pinB_scale3d = getRatio(scene, values.pinB_scale3d);
           objs.messageB.style.opacity = messageB_opacity_in;
-          objs.messageB.style.transform = `translateY(${messageB_translateY_in}%)`;
-          objs.pinB.style.transform = `scaleY(${pinB_scaleY})`;
+          objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_in}%, 0)`;
+          objs.pinB.style.transform = `scale3d(1, ${pinB_scale3d}, 1)`;
         } else {
           const messageB_opacity_out = getRatio(scene, values.messageB_opacity_out);
-          const messageB_translateY_out = getRatio(scene, values.messageB_translateY_out);
+          const messageB_translate3d_out = getRatio(scene, values.messageB_translate3d_out);
           objs.messageB.style.opacity = messageB_opacity_out;
-          objs.messageB.style.transform = `translateY(${messageB_translateY_out}%)`;
+          objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.8) {
           const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
-          const messageC_translateY_in = getRatio(scene, values.messageC_translateY_in);
-          const pinC_scaleY = getRatio(scene, values.pinC_scaleY);
+          const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
+          const pinC_scale3d = getRatio(scene, values.pinC_scale3d);
           objs.messageC.style.opacity = messageC_opacity_in;
-          objs.messageC.style.transform = `translateY(${messageC_translateY_in}%)`;
-          objs.pinC.style.transform = `scaleY(${pinC_scaleY})`;
+          objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
+          objs.pinC.style.transform = `scale3d(1, ${pinC_scale3d}, 1)`;
         } else {
           const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
-          const messageC_translateY_out = getRatio(scene, values.messageC_translateY_out);
+          const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
           objs.messageC.style.opacity = messageC_opacity_out;
-          objs.messageC.style.transform = `translateY(${messageC_translateY_out}%)`;
+          objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
         break;
 
