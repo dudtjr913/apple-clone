@@ -60,6 +60,8 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-2'),
+        canvas: document.querySelector('#canvas-2'),
+        context: document.querySelector('#canvas-2').getContext('2d'),
         messageA: document.querySelector('#scroll-section-2 .main-message.a'),
         messageB: document.querySelector('#scroll-section-2 .description-message.b'),
         messageC: document.querySelector('#scroll-section-2 .description-message.c'),
@@ -67,6 +69,13 @@
         pinC: document.querySelector('#scroll-section-2 .description-message.c .pin'),
       },
       values: {
+        totalImageCount: 960,
+        imagesSrc: [],
+        imageSequence: [0, 959],
+
+        canvas_opacity_in: [0, 1, {start: 0, end: 0.1}],
+        canvas_opacity_out: [1, 0, {start: 0.9, end: 1}],
+
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
         messageA_opacity_out: [1, 0, {start: 0.2, end: 0.28}],
@@ -115,6 +124,12 @@
       $imgElem.src = `video/001/IMG_${6726 + i}.JPG`;
       sceneInfo[0].values.imagesSrc.push($imgElem);
     }
+
+    for (let i = 0; i < sceneInfo[2].values.totalImageCount; i++) {
+      const $imgElem = new Image();
+      $imgElem.src = `video/002/IMG_${7027 + i}.JPG`;
+      sceneInfo[2].values.imagesSrc.push($imgElem);
+    }
   };
 
   const setLayout = () => {
@@ -139,6 +154,7 @@
 
     const heightRatio = window.innerHeight / 1080;
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
+    sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
   };
 
   const setScrollLoop = () => {
@@ -175,9 +191,9 @@
     switch (currentScene) {
       case 0:
         const currentImage = Math.round(getRatio(scene, values.imageSequence));
-        const canvasA_opacity_out = getRatio(scene, values.canvas_opacity_out);
+        const canvas_opacity_out = getRatio(scene, values.canvas_opacity_out);
         scene.objs.context.drawImage(scene.values.imagesSrc[currentImage], 0, 0);
-        objs.canvas.style.opacity = canvasA_opacity_out;
+        objs.canvas.style.opacity = canvas_opacity_out;
 
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
@@ -229,6 +245,9 @@
         break;
 
       case 2:
+        const currentImage2 = Math.round(getRatio(scene, values.imageSequence));
+        scene.objs.context.drawImage(scene.values.imagesSrc[currentImage2], 0, 0);
+
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
           const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
@@ -256,15 +275,19 @@
         }
 
         if (scrollRatio <= 0.8) {
+          const canvas2_opacity_in = getRatio(scene, values.canvas_opacity_in);
           const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
           const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
           const pinC_scale3d = getRatio(scene, values.pinC_scale3d);
+          objs.canvas.style.opacity = canvas2_opacity_in;
           objs.messageC.style.opacity = messageC_opacity_in;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
           objs.pinC.style.transform = `scale3d(1, ${pinC_scale3d}, 1)`;
         } else {
+          const canvas2_opacity_out = getRatio(scene, values.canvas_opacity_out);
           const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
           const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
+          objs.canvas.style.opacity = canvas2_opacity_out;
           objs.messageC.style.opacity = messageC_opacity_out;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
