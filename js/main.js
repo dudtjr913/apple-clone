@@ -207,6 +207,8 @@
 
     const canvasHeight =
       objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasRatio) / 2;
+    values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
+    values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect1X[2].end = canvasHeight / scrollHeight;
     values.rect2X[2].end = canvasHeight / scrollHeight;
 
