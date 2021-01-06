@@ -107,6 +107,8 @@
       values: {
         images: ['./images/blend-image-1.jpg', './images/blend-image-2.jpg'],
         imagesSrc: [],
+        rect1X: [0, 0, {start: 0, end: 0}],
+        rect2X: [0, 0, {start: 0, end: 0}],
       },
     },
   ];
@@ -164,19 +166,9 @@
     }
     document.body.id = `scroll-scene-${currentScene}`;
 
-    const widthRatio = window.innerWidth / 1920;
     const heightRatio = window.innerHeight / 1080;
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
-
-    let canvasRatio;
-    if (widthRatio >= heightRatio) {
-      canvasRatio = widthRatio;
-    } else {
-      canvasRatio = heightRatio;
-    }
-    sceneInfo[3].objs.context.drawImage(sceneInfo[3].values.imagesSrc[0], 0, 0);
-    sceneInfo[3].objs.canvas.style.transform = `scale(${canvasRatio})`;
   };
 
   const setScrollLoop = () => {
@@ -316,6 +308,30 @@
         break;
 
       case 3:
+        const widthRatio = window.innerWidth / objs.canvas.width;
+        const heightRatio = window.innerHeight / objs.canvas.height;
+
+        let canvasRatio;
+        if (widthRatio >= heightRatio) {
+          canvasRatio = widthRatio;
+        } else {
+          canvasRatio = heightRatio;
+        }
+
+        objs.context.drawImage(values.imagesSrc[0], 0, 0);
+        objs.canvas.style.transform = `scale(${canvasRatio})`;
+
+        const recalculatedWidth = window.innerWidth / canvasRatio;
+        const recalculatedHeight = window.innerHeight / canvasRatio;
+
+        const whiteRectWidth = recalculatedWidth * 0.15;
+        values.rect1X[0] = (objs.canvas.width - recalculatedWidth) / 2;
+        values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
+        values.rect2X[0] = values.rect1X[0] + recalculatedWidth - whiteRectWidth;
+        values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
+
+        objs.context.fillRect(values.rect1X[0], 0, parseInt(whiteRectWidth), recalculatedHeight);
+        objs.context.fillRect(values.rect2X[0], 0, parseInt(whiteRectWidth), recalculatedHeight);
         break;
 
       default:
