@@ -168,6 +168,12 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   color: rgb(29, 29, 31);
 }
 
+.canvas-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #scroll-section-3 .canvas-caption {
   color: #888;
   margin: 0 auto;

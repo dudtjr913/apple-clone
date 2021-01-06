@@ -101,6 +101,12 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-3'),
+        canvas: document.querySelector('#canvas-image'),
+        context: document.querySelector('#canvas-image').getContext('2d'),
+      },
+      values: {
+        images: ['./images/blend-image-1.jpg', './images/blend-image-2.jpg'],
+        imagesSrc: [],
       },
     },
   ];
@@ -121,14 +127,20 @@
   const loadImages = () => {
     for (let i = 0; i < sceneInfo[0].values.totalImageCount; i++) {
       const $imgElem = new Image();
-      $imgElem.src = `video/001/IMG_${6726 + i}.JPG`;
+      $imgElem.src = `./video/001/IMG_${6726 + i}.JPG`;
       sceneInfo[0].values.imagesSrc.push($imgElem);
     }
 
     for (let i = 0; i < sceneInfo[2].values.totalImageCount; i++) {
       const $imgElem = new Image();
-      $imgElem.src = `video/002/IMG_${7027 + i}.JPG`;
+      $imgElem.src = `./video/002/IMG_${7027 + i}.JPG`;
       sceneInfo[2].values.imagesSrc.push($imgElem);
+    }
+
+    for (let i = 0; i < sceneInfo[3].values.images.length; i++) {
+      const $imgElem = new Image();
+      $imgElem.src = sceneInfo[3].values.images[i];
+      sceneInfo[3].values.imagesSrc.push($imgElem);
     }
   };
 
@@ -152,9 +164,19 @@
     }
     document.body.id = `scroll-scene-${currentScene}`;
 
+    const widthRatio = window.innerWidth / 1920;
     const heightRatio = window.innerHeight / 1080;
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
+
+    let canvasRatio;
+    if (widthRatio >= heightRatio) {
+      canvasRatio = widthRatio;
+    } else {
+      canvasRatio = heightRatio;
+    }
+    sceneInfo[3].objs.context.drawImage(sceneInfo[3].values.imagesSrc[0], 0, 0);
+    sceneInfo[3].objs.canvas.style.transform = `scale(${canvasRatio})`;
   };
 
   const setScrollLoop = () => {
