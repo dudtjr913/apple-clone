@@ -86,6 +86,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 }
 
 .scroll-section {
+  position: relative;
   padding-top: 50vh;
 }
 
