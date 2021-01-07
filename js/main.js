@@ -112,6 +112,7 @@
         rect2X: [0, 0, {start: 0, end: 0}],
         canvasA: {width: 0, height: 0, whiteRectWidth: 0},
         blendedCanvas: [0, 0, {start: 0, end: 0}],
+        scaleCanvas: [0, 0, {start: 0, end: 0}],
       },
     },
   ];
@@ -180,21 +181,27 @@
 
   // 스크롤을 내리면 스크롤에 따라 점점 커지거나 작아지는 캔버스를 초기 셋팅하는 함수
   const setCanvasAnimationInit = (scrollHeight, values, objs) => {
+    const canvasWidthRatio = document.body.offsetWidth / objs.canvasA.width;
     const canvasHeightRatio = window.innerHeight / objs.canvasA.height;
 
-    if (canvasScaleRatio >= 1) {
-      canvasScaleRatio = 1;
+    if (canvasWidthRatio >= canvasHeightRatio) {
+      canvasScaleRatio = canvasWidthRatio;
     } else {
       canvasScaleRatio = canvasHeightRatio;
+    }
+    if (canvasScaleRatio >= 1) {
+      canvasScaleRatio = 1;
     }
 
     objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
     objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
 
     const recalculatedWidth = document.body.offsetWidth / canvasScaleRatio;
+    const recalculatedHeight = window.innerHeight / canvasScaleRatio;
     const whiteRectWidth = recalculatedWidth * 0.15;
 
     values.canvasA.width = recalculatedWidth;
+    values.canvasA.height = recalculatedHeight;
     values.canvasA.whiteRectWidth = whiteRectWidth;
 
     values.rect1X[0] = (objs.canvasA.width - recalculatedWidth) / 2;
@@ -214,19 +221,20 @@
       parseInt(values.rect1X[0]),
       0,
       parseInt(whiteRectWidth),
-      objs.canvasA.height,
+      recalculatedHeight,
     );
     objs.contextA.fillRect(
       parseInt(values.rect2X[0]),
       0,
       parseInt(whiteRectWidth),
-      objs.canvasA.height,
+      recalculatedHeight,
     );
   };
 
   const setScrollLoop = () => {
     changeScene = false;
     prevScrollHeight = 0;
+
     for (let i = 0; i < currentScene; i++) {
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
@@ -242,6 +250,11 @@
       if (currentScene === 0) return;
       currentScene--;
       document.body.id = `scroll-scene-${currentScene}`;
+    }
+
+    if (currentScene !== 3) {
+      // 마지막 scene이 스크롤을 빠르게 올렸을 때, 화면에 남아있는 것을 삭제
+      sceneInfo[3].objs.canvasA.classList.add('hide');
     }
 
     !changeScene && setAnimation();
@@ -358,49 +371,76 @@
           objs.messageC.style.opacity = messageC_opacity_out;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
+
+        if (scrollRatio > 0.85) {
+          sceneInfo[3].objs.canvasA.classList.remove('hide');
+        }
         break;
 
       case 3:
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
+        objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
+        objs.canvasA.classList.remove('hide');
+
         const canvas1_in = parseInt(getRatio(scene, values.rect1X));
         const canvas2_in = parseInt(getRatio(scene, values.rect2X));
+
         if (scrollRatio <= values.rect1X[2].end) {
           objs.canvasA.classList.remove('sticky-blend-canvas');
           objs.contextA.fillRect(
             canvas1_in,
             0,
             parseInt(values.canvasA.whiteRectWidth),
-            objs.canvasA.height,
+            values.canvasA.height,
           );
           objs.contextA.fillRect(
             canvas2_in,
             0,
             parseInt(values.canvasA.whiteRectWidth),
-            objs.canvasA.height,
+            values.canvasA.height,
           );
         } else {
-          const recalculatedTop =
-            (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
           objs.canvasA.classList.add('sticky-blend-canvas');
-          objs.canvasA.style.top = `-${recalculatedTop}px`;
+          if (!values.blendedCanvas[1]) {
+            // 처음 한 번만 셋팅하기
+            const recalculatedTop =
+              (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
+            objs.canvasA.style.top = `-${recalculatedTop}px`;
 
-          if (scrollRatio >= values.rect1X[2].end + 0.05) {
             values.blendedCanvas[0] = 0;
-            values.blendedCanvas[1] = objs.canvasA.height;
-            values.blendedCanvas[2].start = values.rect1X[2].end + 0.05;
+            values.blendedCanvas[1] = values.canvasA.height;
+            values.blendedCanvas[2].start = values.rect1X[2].end;
             values.blendedCanvas[2].end = values.blendedCanvas[2].start + 0.2;
-            const blendedCanvasHeight = parseInt(getRatio(scene, values.blendedCanvas));
-            objs.contextA.drawImage(
-              values.imagesSrc[1],
-              0,
-              objs.canvasA.height - blendedCanvasHeight,
-              objs.canvasA.width,
-              blendedCanvasHeight,
-              0,
-              objs.canvasA.height - blendedCanvasHeight,
-              objs.canvasA.width,
-              blendedCanvasHeight,
-            );
+
+            values.scaleCanvas[0] = canvasScaleRatio;
+            values.scaleCanvas[1] = canvasScaleRatio / 2;
+            values.scaleCanvas[2].start = values.blendedCanvas[2].end;
+            values.scaleCanvas[2].end = values.scaleCanvas[2].start + 0.2;
+          }
+
+          const blendedCanvasHeight = parseInt(getRatio(scene, values.blendedCanvas));
+          objs.contextA.drawImage(
+            values.imagesSrc[1],
+            0,
+            values.canvasA.height - blendedCanvasHeight,
+            objs.canvasA.width,
+            blendedCanvasHeight,
+            0,
+            values.canvasA.height - blendedCanvasHeight,
+            objs.canvasA.width,
+            blendedCanvasHeight,
+          );
+
+          if (scrollRatio >= values.blendedCanvas[2].end) {
+            const scaleCanvas = getRatio(scene, values.scaleCanvas);
+            objs.canvasA.style.transform = `scale(${scaleCanvas})`;
+            objs.canvasA.style.marginTop = 0;
+
+            if (scaleCanvas === values.scaleCanvas[1]) {
+              const calculatedMarginTop = scene.scrollHeight * 0.4;
+              objs.canvasA.classList.remove('sticky-blend-canvas');
+              objs.canvasA.style.marginTop = `${calculatedMarginTop}px`;
+            }
           }
         }
         break;
