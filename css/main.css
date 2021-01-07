@@ -175,6 +175,10 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   align-items: center;
 }
 
+.sticky-blend-canvas {
+  position: fixed;
+}
+
 #scroll-section-3 .canvas-caption {
   color: #888;
   margin: 0 auto;

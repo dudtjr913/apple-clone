@@ -4,6 +4,7 @@
   let yOffset = 0; // pageYOffset
   let scrollRatio = 0;
   let changeScene = false;
+  let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
 
   const sceneInfo = [
     {
@@ -179,21 +180,20 @@
     const canvasWidthRatio = document.body.offsetWidth / objs.canvas.width;
     const canvasHeightRatio = window.innerHeight / objs.canvas.height;
 
-    let canvasRatio;
     if (canvasWidthRatio >= canvasHeightRatio) {
-      canvasRatio = canvasWidthRatio;
+      canvasScaleRatio = canvasWidthRatio;
     } else {
-      canvasRatio = canvasHeightRatio;
+      canvasScaleRatio = canvasHeightRatio;
     }
-    if (canvasRatio >= 1) {
-      canvasRatio = 1;
+    if (canvasScaleRatio >= 1) {
+      canvasScaleRatio = 1;
     }
 
     objs.context.drawImage(values.imagesSrc[0], 0, 0);
-    objs.canvas.style.transform = `scale(${canvasRatio})`;
+    objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
 
-    const recalculatedWidth = document.body.offsetWidth / canvasRatio;
-    const recalculatedHeight = window.innerHeight / canvasRatio;
+    const recalculatedWidth = document.body.offsetWidth / canvasScaleRatio;
+    const recalculatedHeight = window.innerHeight / canvasScaleRatio;
     const whiteRectWidth = recalculatedWidth * 0.15;
 
     values.canvas1.width = recalculatedWidth;
@@ -206,7 +206,7 @@
     values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
 
     const canvasHeight =
-      objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasRatio) / 2;
+      objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
     values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect1X[2].end = canvasHeight / scrollHeight;
@@ -367,19 +367,26 @@
         objs.context.drawImage(values.imagesSrc[0], 0, 0);
         const canvas1_in = parseInt(getRatio(scene, values.rect1X));
         const canvas2_in = parseInt(getRatio(scene, values.rect2X));
+        if (scrollRatio <= values.rect1X[2].end) {
+          objs.canvas.classList.remove('sticky-blend-canvas');
+          objs.context.fillRect(
+            canvas1_in,
+            0,
+            parseInt(values.canvas1.whiteRectWidth),
+            values.canvas1.height,
+          );
+          objs.context.fillRect(
+            canvas2_in,
+            0,
+            parseInt(values.canvas1.whiteRectWidth),
+            values.canvas1.height,
+          );
+        } else {
+          const recalculatedTop = (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+          objs.canvas.classList.add('sticky-blend-canvas');
+          objs.canvas.style.top = `-${recalculatedTop}px`;
+        }
 
-        objs.context.fillRect(
-          canvas1_in,
-          0,
-          parseInt(values.canvas1.whiteRectWidth),
-          values.canvas1.height,
-        );
-        objs.context.fillRect(
-          canvas2_in,
-          0,
-          parseInt(values.canvas1.whiteRectWidth),
-          values.canvas1.height,
-        );
         break;
 
       default:
