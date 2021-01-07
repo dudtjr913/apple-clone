@@ -102,6 +102,7 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-3'),
+        canvasCaption: document.querySelector('.canvas-caption'),
         canvasA: document.querySelector('#canvas-image1'),
         contextA: document.querySelector('#canvas-image1').getContext('2d'),
       },
@@ -112,7 +113,9 @@
         rect2X: [0, 0, {start: 0, end: 0}],
         canvasA: {width: 0, height: 0, whiteRectWidth: 0},
         blendedCanvas: [0, 0, {start: 0, end: 0}],
-        scaleCanvas: [0, 0, {start: 0, end: 0}],
+        scale_canvas: [0, 0, {start: 0, end: 0}],
+        caption_opacity_in: [0, 1, {start: 0, end: 0}],
+        caption_translate3d_in: [20, -20, {start: 0, end: 0}],
       },
     },
   ];
@@ -174,8 +177,6 @@
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
 
-    sceneInfo[3].objs.canvasA.classList.remove('sticky-blend-canvas');
-
     setCanvasAnimationInit(sceneInfo[3].scrollHeight, sceneInfo[3].values, sceneInfo[3].objs);
   };
 
@@ -183,6 +184,7 @@
   const setCanvasAnimationInit = (scrollHeight, values, objs) => {
     const canvasWidthRatio = document.body.offsetWidth / objs.canvasA.width;
     const canvasHeightRatio = window.innerHeight / objs.canvasA.height;
+    objs.canvasA.classList.remove('sticky-blend-canvas');
 
     if (canvasWidthRatio >= canvasHeightRatio) {
       canvasScaleRatio = canvasWidthRatio;
@@ -209,8 +211,8 @@
     values.rect2X[0] = values.rect1X[0] + recalculatedWidth - whiteRectWidth;
     values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
 
-    const canvasHeight =
-      objs.canvasA.offsetTop + (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
+    const canvasTop = (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
+    const canvasHeight = objs.canvasA.offsetTop + canvasTop;
     values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect1X[2].end = canvasHeight / scrollHeight;
@@ -229,6 +231,23 @@
       parseInt(whiteRectWidth),
       recalculatedHeight,
     );
+
+    objs.canvasA.style.top = `-${canvasTop}px`;
+
+    values.blendedCanvas[0] = 0;
+    values.blendedCanvas[1] = objs.canvasA.height;
+    values.blendedCanvas[2].start = values.rect1X[2].end;
+    values.blendedCanvas[2].end = values.blendedCanvas[2].start + 0.2;
+
+    values.scale_canvas[0] = canvasScaleRatio;
+    values.scale_canvas[1] = canvasScaleRatio / 2;
+    values.scale_canvas[2].start = values.blendedCanvas[2].end;
+    values.scale_canvas[2].end = values.scale_canvas[2].start + 0.2;
+
+    values.caption_opacity_in[2].start = values.scale_canvas[2].end;
+    values.caption_opacity_in[2].end = values.caption_opacity_in[2].start + 0.1;
+    values.caption_translate3d_in[2].start = values.scale_canvas[2].end;
+    values.caption_translate3d_in[2].end = values.caption_translate3d_in[2].start + 0.1;
   };
 
   const setScrollLoop = () => {
@@ -380,6 +399,7 @@
       case 3:
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
+        objs.canvasA.style.marginTop = 0;
         objs.canvasA.classList.remove('hide');
 
         const canvas1_in = parseInt(getRatio(scene, values.rect1X));
@@ -400,43 +420,29 @@
             values.canvasA.height,
           );
         } else {
-          objs.canvasA.classList.add('sticky-blend-canvas');
-          if (!values.blendedCanvas[1]) {
-            // 처음 한 번만 셋팅하기
-            const recalculatedTop =
-              (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
-            objs.canvasA.style.top = `-${recalculatedTop}px`;
-
-            values.blendedCanvas[0] = 0;
-            values.blendedCanvas[1] = values.canvasA.height;
-            values.blendedCanvas[2].start = values.rect1X[2].end;
-            values.blendedCanvas[2].end = values.blendedCanvas[2].start + 0.2;
-
-            values.scaleCanvas[0] = canvasScaleRatio;
-            values.scaleCanvas[1] = canvasScaleRatio / 2;
-            values.scaleCanvas[2].start = values.blendedCanvas[2].end;
-            values.scaleCanvas[2].end = values.scaleCanvas[2].start + 0.2;
-          }
-
           const blendedCanvasHeight = parseInt(getRatio(scene, values.blendedCanvas));
+          objs.canvasA.classList.add('sticky-blend-canvas');
           objs.contextA.drawImage(
             values.imagesSrc[1],
             0,
-            values.canvasA.height - blendedCanvasHeight,
+            objs.canvasA.height - blendedCanvasHeight,
             objs.canvasA.width,
             blendedCanvasHeight,
             0,
-            values.canvasA.height - blendedCanvasHeight,
+            objs.canvasA.height - blendedCanvasHeight,
             objs.canvasA.width,
             blendedCanvasHeight,
           );
 
           if (scrollRatio >= values.blendedCanvas[2].end) {
-            const scaleCanvas = getRatio(scene, values.scaleCanvas);
+            const scaleCanvas = getRatio(scene, values.scale_canvas);
+            const caption_opacity_in = getRatio(scene, values.caption_opacity_in);
+            const caption_translate3d_in = getRatio(scene, values.caption_translate3d_in);
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
-            objs.canvasA.style.marginTop = 0;
+            objs.canvasCaption.style.opacity = caption_opacity_in;
+            objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
 
-            if (scaleCanvas === values.scaleCanvas[1]) {
+            if (scaleCanvas === values.scale_canvas[1]) {
               const calculatedMarginTop = scene.scrollHeight * 0.4;
               objs.canvasA.classList.remove('sticky-blend-canvas');
               objs.canvasA.style.marginTop = `${calculatedMarginTop}px`;
