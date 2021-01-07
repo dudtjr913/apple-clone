@@ -102,15 +102,16 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-3'),
-        canvas: document.querySelector('#canvas-image'),
-        context: document.querySelector('#canvas-image').getContext('2d'),
+        canvasA: document.querySelector('#canvas-image1'),
+        contextA: document.querySelector('#canvas-image1').getContext('2d'),
       },
       values: {
         images: ['./images/blend-image-1.jpg', './images/blend-image-2.jpg'],
         imagesSrc: [],
         rect1X: [0, 0, {start: 0, end: 0}],
         rect2X: [0, 0, {start: 0, end: 0}],
-        canvas1: {width: 0, height: 0, whiteRectWidth: 0},
+        canvasA: {width: 0, height: 0, whiteRectWidth: 0},
+        blendedCanvas: [0, 0, {start: 0, end: 0}],
       },
     },
   ];
@@ -172,58 +173,54 @@
     sceneInfo[0].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
 
+    sceneInfo[3].objs.canvasA.classList.remove('sticky-blend-canvas');
+
     setCanvasAnimationInit(sceneInfo[3].scrollHeight, sceneInfo[3].values, sceneInfo[3].objs);
   };
 
   // 스크롤을 내리면 스크롤에 따라 점점 커지거나 작아지는 캔버스를 초기 셋팅하는 함수
   const setCanvasAnimationInit = (scrollHeight, values, objs) => {
-    const canvasWidthRatio = document.body.offsetWidth / objs.canvas.width;
-    const canvasHeightRatio = window.innerHeight / objs.canvas.height;
+    const canvasHeightRatio = window.innerHeight / objs.canvasA.height;
 
-    if (canvasWidthRatio >= canvasHeightRatio) {
-      canvasScaleRatio = canvasWidthRatio;
+    if (canvasScaleRatio >= 1) {
+      canvasScaleRatio = 1;
     } else {
       canvasScaleRatio = canvasHeightRatio;
     }
-    if (canvasScaleRatio >= 1) {
-      canvasScaleRatio = 1;
-    }
 
-    objs.context.drawImage(values.imagesSrc[0], 0, 0);
-    objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+    objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
+    objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
 
     const recalculatedWidth = document.body.offsetWidth / canvasScaleRatio;
-    const recalculatedHeight = window.innerHeight / canvasScaleRatio;
     const whiteRectWidth = recalculatedWidth * 0.15;
 
-    values.canvas1.width = recalculatedWidth;
-    values.canvas1.height = recalculatedHeight;
-    values.canvas1.whiteRectWidth = whiteRectWidth;
+    values.canvasA.width = recalculatedWidth;
+    values.canvasA.whiteRectWidth = whiteRectWidth;
 
-    values.rect1X[0] = (objs.canvas.width - recalculatedWidth) / 2;
+    values.rect1X[0] = (objs.canvasA.width - recalculatedWidth) / 2;
     values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
     values.rect2X[0] = values.rect1X[0] + recalculatedWidth - whiteRectWidth;
     values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
 
     const canvasHeight =
-      objs.canvas.offsetTop + (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+      objs.canvasA.offsetTop + (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
     values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
     values.rect1X[2].end = canvasHeight / scrollHeight;
     values.rect2X[2].end = canvasHeight / scrollHeight;
 
-    objs.context.fillStyle = 'white';
-    objs.context.fillRect(
+    objs.contextA.fillStyle = 'white';
+    objs.contextA.fillRect(
       parseInt(values.rect1X[0]),
       0,
       parseInt(whiteRectWidth),
-      recalculatedHeight,
+      objs.canvasA.height,
     );
-    objs.context.fillRect(
+    objs.contextA.fillRect(
       parseInt(values.rect2X[0]),
       0,
       parseInt(whiteRectWidth),
-      recalculatedHeight,
+      objs.canvasA.height,
     );
   };
 
@@ -364,29 +361,48 @@
         break;
 
       case 3:
-        objs.context.drawImage(values.imagesSrc[0], 0, 0);
+        objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         const canvas1_in = parseInt(getRatio(scene, values.rect1X));
         const canvas2_in = parseInt(getRatio(scene, values.rect2X));
         if (scrollRatio <= values.rect1X[2].end) {
-          objs.canvas.classList.remove('sticky-blend-canvas');
-          objs.context.fillRect(
+          objs.canvasA.classList.remove('sticky-blend-canvas');
+          objs.contextA.fillRect(
             canvas1_in,
             0,
-            parseInt(values.canvas1.whiteRectWidth),
-            values.canvas1.height,
+            parseInt(values.canvasA.whiteRectWidth),
+            objs.canvasA.height,
           );
-          objs.context.fillRect(
+          objs.contextA.fillRect(
             canvas2_in,
             0,
-            parseInt(values.canvas1.whiteRectWidth),
-            values.canvas1.height,
+            parseInt(values.canvasA.whiteRectWidth),
+            objs.canvasA.height,
           );
         } else {
-          const recalculatedTop = (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
-          objs.canvas.classList.add('sticky-blend-canvas');
-          objs.canvas.style.top = `-${recalculatedTop}px`;
-        }
+          const recalculatedTop =
+            (objs.canvasA.height - objs.canvasA.height * canvasScaleRatio) / 2;
+          objs.canvasA.classList.add('sticky-blend-canvas');
+          objs.canvasA.style.top = `-${recalculatedTop}px`;
 
+          if (scrollRatio >= values.rect1X[2].end + 0.05) {
+            values.blendedCanvas[0] = 0;
+            values.blendedCanvas[1] = objs.canvasA.height;
+            values.blendedCanvas[2].start = values.rect1X[2].end + 0.05;
+            values.blendedCanvas[2].end = values.blendedCanvas[2].start + 0.2;
+            const blendedCanvasHeight = parseInt(getRatio(scene, values.blendedCanvas));
+            objs.contextA.drawImage(
+              values.imagesSrc[1],
+              0,
+              objs.canvasA.height - blendedCanvasHeight,
+              objs.canvasA.width,
+              blendedCanvasHeight,
+              0,
+              objs.canvasA.height - blendedCanvasHeight,
+              objs.canvasA.width,
+              blendedCanvasHeight,
+            );
+          }
+        }
         break;
 
       default:
