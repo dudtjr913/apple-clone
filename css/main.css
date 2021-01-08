@@ -175,10 +175,6 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   align-items: center;
 }
 
-#canvas-image1.hide {
-  position: hi;
-}
-
 .sticky-blend-canvas {
   position: fixed;
 }

@@ -1,8 +1,11 @@
 (() => {
+  const acc = 0.2; // 부드럽게 스크롤 하기 위한 감속 비율
+  let delayedYOffset = 0; // 부드럽게 스크롤 하기 위한 감속이 적용된 yOffset
+  let rafValue = 0; // requestAnimationFrame의 값(cancel을 하기 위함)
+  let rafState = 'stop'; // requestAnimationFrame의 상태(stop or going)
   let currentScene = 0; // 현재 보고 있는 scene
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
-  let scrollRatio = 0;
   let changeScene = false;
   let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
 
@@ -121,7 +124,6 @@
   ];
 
   const debounce = (func) => {
-    console.log('aa');
     let start = 0;
     return () => {
       if (start) {
@@ -272,11 +274,6 @@
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    if (currentScene !== 3) {
-      // 마지막 scene이 스크롤을 빠르게 올렸을 때, 화면에 남아있는 것을 삭제
-      sceneInfo[3].objs.canvasA.classList.add('hide');
-    }
-
     !changeScene && setAnimation();
   };
 
@@ -286,13 +283,11 @@
     const scene = sceneInfo[currentScene];
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
-    scrollRatio = currentYOffset / currentScrollHeight;
+    const scrollRatio = currentYOffset / currentScrollHeight;
 
     switch (currentScene) {
       case 0:
-        const currentImage = Math.round(getRatio(scene, values.imageSequence));
         const canvas_opacity_out = getRatio(scene, values.canvas_opacity_out);
-        scene.objs.context.drawImage(scene.values.imagesSrc[currentImage], 0, 0);
         objs.canvas.style.opacity = canvas_opacity_out;
 
         if (scrollRatio <= 0.2) {
@@ -345,9 +340,6 @@
         break;
 
       case 2:
-        const currentImage2 = Math.round(getRatio(scene, values.imageSequence));
-        scene.objs.context.drawImage(scene.values.imagesSrc[currentImage2], 0, 0);
-
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
           const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
@@ -392,16 +384,12 @@
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
 
-        if (scrollRatio > 0.85) {
-          sceneInfo[3].objs.canvasA.classList.remove('hide');
-        }
         break;
 
       case 3:
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
-        objs.canvasA.classList.remove('hide');
 
         const canvas1_in = parseInt(getRatio(scene, values.rect1X));
         const canvas2_in = parseInt(getRatio(scene, values.rect2X));
@@ -457,10 +445,11 @@
     }
   };
 
-  const getRatio = (scene, values) => {
+  const getRatio = (scene, values, currentDelayedYOffset) => {
     let rv;
-    const currentYOffset = yOffset - prevScrollHeight;
+    const currentYOffset = currentDelayedYOffset || yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
+    const scrollRatio = currentYOffset / currentScrollHeight;
     if (values.length === 3) {
       rv = getPartRatio(currentYOffset, currentScrollHeight, values);
     } else {
@@ -486,6 +475,32 @@
     return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
   };
 
+  const loop = () => {
+    rafState = 'going';
+    delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+    if (!changeScene) {
+      if (currentScene === 0 || currentScene === 2) {
+        const scene = sceneInfo[currentScene];
+        const {objs, values} = scene;
+        const currentDelayedYOffset = delayedYOffset - prevScrollHeight;
+
+        const currentImage = Math.round(
+          getRatio(scene, values.imageSequence, currentDelayedYOffset),
+        );
+        if (values.imagesSrc[currentImage]) {
+          objs.context.drawImage(values.imagesSrc[currentImage], 0, 0);
+        }
+      }
+    }
+
+    rafValue = requestAnimationFrame(loop);
+
+    if (Math.abs(yOffset - delayedYOffset) < 1) {
+      cancelAnimationFrame(rafValue);
+      rafState = 'stop';
+    }
+  };
+
   const windowReLoad = () => {
     window.location.reload();
   };
@@ -495,7 +510,11 @@
   window.addEventListener('scroll', () => {
     yOffset = window.pageYOffset;
     setScrollLoop();
+    if (rafState === 'stop') {
+      loop();
+    }
   });
+
   window.addEventListener('resize', debounce(windowReLoad));
   window.addEventListener('load', () => {
     setLayout();
