@@ -115,12 +115,13 @@
         blendedCanvas: [0, 0, {start: 0, end: 0}],
         scale_canvas: [0, 0, {start: 0, end: 0}],
         caption_opacity_in: [0, 1, {start: 0, end: 0}],
-        caption_translate3d_in: [20, -20, {start: 0, end: 0}],
+        caption_translate3d_in: [20, 0, {start: 0, end: 0}],
       },
     },
   ];
 
   const debounce = (func) => {
+    console.log('aa');
     let start = 0;
     return () => {
       if (start) {
@@ -485,13 +486,17 @@
     return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
   };
 
+  const windowReLoad = () => {
+    window.location.reload();
+  };
+
   loadImages();
 
   window.addEventListener('scroll', () => {
     yOffset = window.pageYOffset;
     setScrollLoop();
   });
-  window.addEventListener('resize', debounce(setLayout));
+  window.addEventListener('resize', debounce(windowReLoad));
   window.addEventListener('load', () => {
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
