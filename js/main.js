@@ -28,7 +28,7 @@
         imagesSrc: [],
         imageSequence: [0, 299],
 
-        canvas_opacity_out: [1, 0, {start: 0.9, end: 1}],
+        canvas_opacity_out: [1, 0, {start: 0.88, end: 1}],
 
         messageA_opacity_in: [0, 1, {start: 0.1, end: 0.2}],
         messageA_translate3d_in: [20, 0, {start: 0.1, end: 0.2}],
@@ -123,7 +123,7 @@
     },
   ];
 
-  const debounce = (func) => {
+  const debounce = (func, ms) => {
     let start = 0;
     return () => {
       if (start) {
@@ -132,7 +132,7 @@
       start = setTimeout(() => {
         start = 0;
         func();
-      }, 200);
+      }, ms);
     };
   };
 
@@ -261,13 +261,13 @@
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
-    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+    if (delayedYOffset >= prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       changeScene = true;
       currentScene++;
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    if (yOffset < prevScrollHeight) {
+    if (delayedYOffset <= prevScrollHeight) {
       changeScene = true;
       if (currentScene === 0) return;
       currentScene--;
@@ -284,6 +284,7 @@
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
     const scrollRatio = currentYOffset / currentScrollHeight;
+    console.log(currentScene);
 
     switch (currentScene) {
       case 0:
@@ -343,11 +344,15 @@
         if (scrollRatio <= 0.2) {
           const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
           const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
+          const canvas2_opacity_in = getRatio(scene, values.canvas_opacity_in);
+          objs.canvas.style.opacity = canvas2_opacity_in;
           objs.messageA.style.opacity = messageA_opacity_in;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_in}%, 0)`;
         } else {
           const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
           const messageA_translate3d_out = getRatio(scene, values.messageA_translate3d_out);
+          const canvas2_opacity_out = getRatio(scene, values.canvas_opacity_out);
+          objs.canvas.style.opacity = canvas2_opacity_out;
           objs.messageA.style.opacity = messageA_opacity_out;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_out}%, 0)`;
         }
@@ -367,19 +372,15 @@
         }
 
         if (scrollRatio <= 0.8) {
-          const canvas2_opacity_in = getRatio(scene, values.canvas_opacity_in);
           const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
           const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
           const pinC_scale3d = getRatio(scene, values.pinC_scale3d);
-          objs.canvas.style.opacity = canvas2_opacity_in;
           objs.messageC.style.opacity = messageC_opacity_in;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
           objs.pinC.style.transform = `scale3d(1, ${pinC_scale3d}, 1)`;
         } else {
-          const canvas2_opacity_out = getRatio(scene, values.canvas_opacity_out);
           const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
           const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
-          objs.canvas.style.opacity = canvas2_opacity_out;
           objs.messageC.style.opacity = messageC_opacity_out;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
@@ -507,15 +508,18 @@
 
   loadImages();
 
-  window.addEventListener('scroll', () => {
-    yOffset = window.pageYOffset;
-    setScrollLoop();
-    if (rafState === 'stop') {
-      loop();
-    }
-  });
+  window.addEventListener(
+    'scroll',
+    debounce(() => {
+      yOffset = window.pageYOffset;
+      setScrollLoop();
+      if (rafState === 'stop') {
+        loop();
+      }
+    }, 15),
+  );
 
-  window.addEventListener('resize', debounce(windowReLoad));
+  window.addEventListener('resize', debounce(windowReLoad, 200));
   window.addEventListener('load', () => {
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
