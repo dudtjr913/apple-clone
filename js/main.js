@@ -250,7 +250,7 @@
     values.scale_canvas[0] = canvasScaleRatio;
     values.scale_canvas[1] =
       canvasScaleRatio < 1 ? document.body.offsetWidth / (1.5 * objs.canvasA.width) : 0.5;
-    values.scale_canvas[2].start = values.blendedCanvas[2].end;
+    values.scale_canvas[2].start = values.blendedCanvas[2].end + 0.05;
     values.scale_canvas[2].end = values.scale_canvas[2].start + 0.2;
 
     values.caption_opacity_in[2].start = values.scale_canvas[2].end;
@@ -291,7 +291,6 @@
 
     // 3번 scene이 빠르게 스크롤되어서 남아있을 때 초기화
     if (currentScene !== 3 && sceneInfo[3].objs.canvasA.className === 'sticky-blend-canvas') {
-      sceneInfo[3].objs.canvasA.classList.remove('sticky-blend-canvas');
       sceneInfo[3].objs.contextA.drawImage(sceneInfo[3].values.imagesSrc[0], 0, 0);
       sceneInfo[3].objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
       sceneInfo[3].objs.canvasA.style.marginTop = 0;
@@ -440,16 +439,12 @@
           sceneInfo[2].objs.context.drawImage(sceneInfo[2].values.imagesSrc[lastImage2], 0, 0);
         }
 
-        const caption_opacity_in = getRatio(values.caption_opacity_in, currentYOffset);
-        const caption_translate3d_in = getRatio(values.caption_translate3d_in, currentYOffset);
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
-        objs.canvasCaption.style.opacity = caption_opacity_in;
-        objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
 
         if (scrollRatio <= values.rect1X[2].end) {
-          objs.canvasA.classList.remove('sticky-blend-canvas');
+          objs.canvasCaption.style.opacity = 0;
           lastSceneInit(currentYOffset);
         } else {
           const blendedCanvasHeight = parseInt(getRatio(values.blendedCanvas, currentYOffset));
@@ -468,9 +463,13 @@
 
           if (scrollRatio >= values.blendedCanvas[2].end) {
             const scaleCanvas = getRatio(values.scale_canvas, currentYOffset);
+            const caption_opacity_in = getRatio(values.caption_opacity_in, currentYOffset);
+            const caption_translate3d_in = getRatio(values.caption_translate3d_in, currentYOffset);
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
+            objs.canvasCaption.style.opacity = caption_opacity_in;
+            objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
             if (scaleCanvas === values.scale_canvas[1]) {
-              const calculatedMarginTop = scene.scrollHeight * 0.4;
+              const calculatedMarginTop = scene.scrollHeight * 0.45;
               objs.canvasA.classList.remove('sticky-blend-canvas');
               objs.canvasA.style.marginTop = `${calculatedMarginTop}px`;
             }
@@ -516,6 +515,7 @@
     const {objs, values} = sceneInfo[3];
     const canvas1_in = parseInt(getRatio(values.rect1X, currentYOffset));
     const canvas2_in = parseInt(getRatio(values.rect2X, currentYOffset));
+    objs.canvasA.classList.remove('sticky-blend-canvas');
     objs.contextA.fillRect(
       canvas1_in,
       0,
