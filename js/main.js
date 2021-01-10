@@ -248,7 +248,8 @@
     values.blendedCanvas[2].end = values.blendedCanvas[2].start + 0.2;
 
     values.scale_canvas[0] = canvasScaleRatio;
-    values.scale_canvas[1] = canvasScaleRatio / 2;
+    values.scale_canvas[1] =
+      canvasScaleRatio < 1 ? document.body.offsetWidth / (1.5 * objs.canvasA.width) : 0.5;
     values.scale_canvas[2].start = values.blendedCanvas[2].end;
     values.scale_canvas[2].end = values.scale_canvas[2].start + 0.2;
 
@@ -287,6 +288,15 @@
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
     const scrollRatio = currentYOffset / currentScrollHeight;
+
+    // 3번 scene이 빠르게 스크롤되어서 남아있을 때 초기화
+    if (currentScene !== 3 && sceneInfo[3].objs.canvasA.className === 'sticky-blend-canvas') {
+      sceneInfo[3].objs.canvasA.classList.remove('sticky-blend-canvas');
+      sceneInfo[3].objs.contextA.drawImage(sceneInfo[3].values.imagesSrc[0], 0, 0);
+      sceneInfo[3].objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
+      sceneInfo[3].objs.canvasA.style.marginTop = 0;
+      lastSceneInit(0);
+    }
 
     switch (currentScene) {
       case 0:
@@ -355,6 +365,7 @@
         break;
 
       case 1:
+        // 0,2번 scene이 빠르게 스크롤되어서 남아있을 때 초기화
         if (!initImage) {
           initImage = true;
           const lastImage1 = sceneInfo[0].values.imageSequence[1];
@@ -420,6 +431,7 @@
         break;
 
       case 3:
+        // 0,2번 scene이 빠르게 스크롤되어서 남아있을 때 초기화
         if (!initImage) {
           initImage = true;
           const lastImage1 = sceneInfo[0].values.imageSequence[1];
@@ -428,26 +440,17 @@
           sceneInfo[2].objs.context.drawImage(sceneInfo[2].values.imagesSrc[lastImage2], 0, 0);
         }
 
+        const caption_opacity_in = getRatio(values.caption_opacity_in, currentYOffset);
+        const caption_translate3d_in = getRatio(values.caption_translate3d_in, currentYOffset);
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
+        objs.canvasCaption.style.opacity = caption_opacity_in;
+        objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
 
-        const canvas1_in = parseInt(getRatio(values.rect1X, currentYOffset));
-        const canvas2_in = parseInt(getRatio(values.rect2X, currentYOffset));
         if (scrollRatio <= values.rect1X[2].end) {
           objs.canvasA.classList.remove('sticky-blend-canvas');
-          objs.contextA.fillRect(
-            canvas1_in,
-            0,
-            parseInt(values.canvasA.whiteRectWidth),
-            values.canvasA.height,
-          );
-          objs.contextA.fillRect(
-            canvas2_in,
-            0,
-            parseInt(values.canvasA.whiteRectWidth),
-            values.canvasA.height,
-          );
+          lastSceneInit(currentYOffset);
         } else {
           const blendedCanvasHeight = parseInt(getRatio(values.blendedCanvas, currentYOffset));
           objs.canvasA.classList.add('sticky-blend-canvas');
@@ -465,12 +468,7 @@
 
           if (scrollRatio >= values.blendedCanvas[2].end) {
             const scaleCanvas = getRatio(values.scale_canvas, currentYOffset);
-            const caption_opacity_in = getRatio(values.caption_opacity_in, currentYOffset);
-            const caption_translate3d_in = getRatio(values.caption_translate3d_in, currentYOffset);
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
-            objs.canvasCaption.style.opacity = caption_opacity_in;
-            objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
-
             if (scaleCanvas === values.scale_canvas[1]) {
               const calculatedMarginTop = scene.scrollHeight * 0.4;
               objs.canvasA.classList.remove('sticky-blend-canvas');
@@ -512,6 +510,24 @@
     }
 
     return ((currentYOffset - partStart) / partHeight) * (values[1] - values[0]) + values[0];
+  };
+
+  const lastSceneInit = (currentYOffset) => {
+    const {objs, values} = sceneInfo[3];
+    const canvas1_in = parseInt(getRatio(values.rect1X, currentYOffset));
+    const canvas2_in = parseInt(getRatio(values.rect2X, currentYOffset));
+    objs.contextA.fillRect(
+      canvas1_in,
+      0,
+      parseInt(values.canvasA.whiteRectWidth),
+      values.canvasA.height,
+    );
+    objs.contextA.fillRect(
+      canvas2_in,
+      0,
+      parseInt(values.canvasA.whiteRectWidth),
+      values.canvasA.height,
+    );
   };
 
   const loop = () => {
