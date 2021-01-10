@@ -7,6 +7,8 @@
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
   let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
+  let currentImage = 0; // 현재 화면에 그려지는 이미지
+  let initImage = false; // 다른 scene의 이미지가 초기화 되었는지 알려주기 위함
 
   const sceneInfo = [
     {
@@ -263,12 +265,10 @@
     }
 
     while (yOffset < prevScrollHeight) {
-      prevScrollHeight -= sceneInfo[currentScene].scrollHeight;
       if (currentScene === 0) break;
+      prevScrollHeight -= sceneInfo[currentScene - 1].scrollHeight;
       currentScene--;
     }
-
-    console.log(currentScene);
 
     document.body.id = `scroll-scene-${currentScene}`;
 
@@ -290,99 +290,129 @@
 
     switch (currentScene) {
       case 0:
-        const canvas_opacity_out = getRatio(scene, values.canvas_opacity_out);
+        const canvas_opacity_out = getRatio(values.canvas_opacity_out, currentYOffset);
         objs.canvas.style.opacity = canvas_opacity_out;
 
         if (scrollRatio <= 0.2) {
-          const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
-          const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
+          const messageA_opacity_in = getRatio(values.messageA_opacity_in, currentYOffset);
+          const messageA_translate3d_in = getRatio(values.messageA_translate3d_in, currentYOffset);
           objs.messageA.style.opacity = messageA_opacity_in;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_in}%, 0)`;
         } else {
-          const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
-          const messageA_translate3d_out = getRatio(scene, values.messageA_translate3d_out);
+          const messageA_opacity_out = getRatio(values.messageA_opacity_out, currentYOffset);
+          const messageA_translate3d_out = getRatio(
+            values.messageA_translate3d_out,
+            currentYOffset,
+          );
           objs.messageA.style.opacity = messageA_opacity_out;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.4) {
-          const messageB_opacity_in = getRatio(scene, values.messageB_opacity_in);
-          const messageB_translate3d_in = getRatio(scene, values.messageB_translate3d_in);
+          const messageB_opacity_in = getRatio(values.messageB_opacity_in, currentYOffset);
+          const messageB_translate3d_in = getRatio(values.messageB_translate3d_in, currentYOffset);
           objs.messageB.style.opacity = messageB_opacity_in;
           objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_in}%, 0)`;
         } else {
-          const messageB_opacity_out = getRatio(scene, values.messageB_opacity_out);
-          const messageB_translate3d_out = getRatio(scene, values.messageB_translate3d_out);
+          const messageB_opacity_out = getRatio(values.messageB_opacity_out, currentYOffset);
+          const messageB_translate3d_out = getRatio(
+            values.messageB_translate3d_out,
+            currentYOffset,
+          );
           objs.messageB.style.opacity = messageB_opacity_out;
           objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.6) {
-          const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
-          const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
+          const messageC_opacity_in = getRatio(values.messageC_opacity_in, currentYOffset);
+          const messageC_translate3d_in = getRatio(values.messageC_translate3d_in, currentYOffset);
           objs.messageC.style.opacity = messageC_opacity_in;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
         } else {
-          const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
-          const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
+          const messageC_opacity_out = getRatio(values.messageC_opacity_out, currentYOffset);
+          const messageC_translate3d_out = getRatio(
+            values.messageC_translate3d_out,
+            currentYOffset,
+          );
           objs.messageC.style.opacity = messageC_opacity_out;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.8) {
-          const messageD_opacity_in = getRatio(scene, values.messageD_opacity_in);
-          const messageD_translate3d_in = getRatio(scene, values.messageD_translate3d_in);
+          const messageD_opacity_in = getRatio(values.messageD_opacity_in, currentYOffset);
+          const messageD_translate3d_in = getRatio(values.messageD_translate3d_in, currentYOffset);
           objs.messageD.style.opacity = messageD_opacity_in;
           objs.messageD.style.transform = `translate3d(0, ${messageD_translate3d_in}%, 0)`;
         } else {
-          const messageD_opacity_out = getRatio(scene, values.messageD_opacity_out);
-          const messageD_translate3d_out = getRatio(scene, values.messageD_translate3d_out);
+          const messageD_opacity_out = getRatio(values.messageD_opacity_out, currentYOffset);
+          const messageD_translate3d_out = getRatio(
+            values.messageD_translate3d_out,
+            currentYOffset,
+          );
           objs.messageD.style.opacity = messageD_opacity_out;
           objs.messageD.style.transform = `translate3d(0, ${messageD_translate3d_out}%, 0)`;
         }
         break;
 
+      case 1:
+        if (!initImage) {
+          initImage = true;
+          const lastImage1 = sceneInfo[0].values.imageSequence[1];
+          sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[lastImage1], 0, 0);
+          sceneInfo[2].objs.context.drawImage(sceneInfo[2].values.imagesSrc[0], 0, 0);
+        }
+        break;
+
       case 2:
         if (scrollRatio <= 0.2) {
-          const messageA_opacity_in = getRatio(scene, values.messageA_opacity_in);
-          const messageA_translate3d_in = getRatio(scene, values.messageA_translate3d_in);
-          const canvas2_opacity_in = getRatio(scene, values.canvas_opacity_in);
+          const messageA_opacity_in = getRatio(values.messageA_opacity_in, currentYOffset);
+          const messageA_translate3d_in = getRatio(values.messageA_translate3d_in, currentYOffset);
+          const canvas2_opacity_in = getRatio(values.canvas_opacity_in, currentYOffset);
           objs.canvas.style.opacity = canvas2_opacity_in;
           objs.messageA.style.opacity = messageA_opacity_in;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_in}%, 0)`;
         } else {
-          const messageA_opacity_out = getRatio(scene, values.messageA_opacity_out);
-          const messageA_translate3d_out = getRatio(scene, values.messageA_translate3d_out);
-          const canvas2_opacity_out = getRatio(scene, values.canvas_opacity_out);
+          const messageA_opacity_out = getRatio(values.messageA_opacity_out, currentYOffset);
+          const messageA_translate3d_out = getRatio(
+            values.messageA_translate3d_out,
+            currentYOffset,
+          );
+          const canvas2_opacity_out = getRatio(values.canvas_opacity_out, currentYOffset);
           objs.canvas.style.opacity = canvas2_opacity_out;
           objs.messageA.style.opacity = messageA_opacity_out;
           objs.messageA.style.transform = `translate3d(0, ${messageA_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.45) {
-          const messageB_opacity_in = getRatio(scene, values.messageB_opacity_in);
-          const messageB_translate3d_in = getRatio(scene, values.messageB_translate3d_in);
-          const pinB_scale3d = getRatio(scene, values.pinB_scale3d);
+          const messageB_opacity_in = getRatio(values.messageB_opacity_in, currentYOffset);
+          const messageB_translate3d_in = getRatio(values.messageB_translate3d_in, currentYOffset);
+          const pinB_scale3d = getRatio(values.pinB_scale3d, currentYOffset);
           objs.messageB.style.opacity = messageB_opacity_in;
           objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_in}%, 0)`;
           objs.pinB.style.transform = `scale3d(1, ${pinB_scale3d}, 1)`;
         } else {
-          const messageB_opacity_out = getRatio(scene, values.messageB_opacity_out);
-          const messageB_translate3d_out = getRatio(scene, values.messageB_translate3d_out);
+          const messageB_opacity_out = getRatio(values.messageB_opacity_out, currentYOffset);
+          const messageB_translate3d_out = getRatio(
+            values.messageB_translate3d_out,
+            currentYOffset,
+          );
           objs.messageB.style.opacity = messageB_opacity_out;
           objs.messageB.style.transform = `translate3d(0, ${messageB_translate3d_out}%, 0)`;
         }
 
         if (scrollRatio <= 0.8) {
-          const messageC_opacity_in = getRatio(scene, values.messageC_opacity_in);
-          const messageC_translate3d_in = getRatio(scene, values.messageC_translate3d_in);
-          const pinC_scale3d = getRatio(scene, values.pinC_scale3d);
+          const messageC_opacity_in = getRatio(values.messageC_opacity_in, currentYOffset);
+          const messageC_translate3d_in = getRatio(values.messageC_translate3d_in, currentYOffset);
+          const pinC_scale3d = getRatio(values.pinC_scale3d, currentYOffset);
           objs.messageC.style.opacity = messageC_opacity_in;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_in}%, 0)`;
           objs.pinC.style.transform = `scale3d(1, ${pinC_scale3d}, 1)`;
         } else {
-          const messageC_opacity_out = getRatio(scene, values.messageC_opacity_out);
-          const messageC_translate3d_out = getRatio(scene, values.messageC_translate3d_out);
+          const messageC_opacity_out = getRatio(values.messageC_opacity_out, currentYOffset);
+          const messageC_translate3d_out = getRatio(
+            values.messageC_translate3d_out,
+            currentYOffset,
+          );
           objs.messageC.style.opacity = messageC_opacity_out;
           objs.messageC.style.transform = `translate3d(0, ${messageC_translate3d_out}%, 0)`;
         }
@@ -390,13 +420,20 @@
         break;
 
       case 3:
+        if (!initImage) {
+          initImage = true;
+          const lastImage1 = sceneInfo[0].values.imageSequence[1];
+          const lastImage2 = sceneInfo[2].values.imageSequence[1];
+          sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[lastImage1], 0, 0);
+          sceneInfo[2].objs.context.drawImage(sceneInfo[2].values.imagesSrc[lastImage2], 0, 0);
+        }
+
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
 
-        const canvas1_in = parseInt(getRatio(scene, values.rect1X));
-        const canvas2_in = parseInt(getRatio(scene, values.rect2X));
-
+        const canvas1_in = parseInt(getRatio(values.rect1X, currentYOffset));
+        const canvas2_in = parseInt(getRatio(values.rect2X, currentYOffset));
         if (scrollRatio <= values.rect1X[2].end) {
           objs.canvasA.classList.remove('sticky-blend-canvas');
           objs.contextA.fillRect(
@@ -412,7 +449,7 @@
             values.canvasA.height,
           );
         } else {
-          const blendedCanvasHeight = parseInt(getRatio(scene, values.blendedCanvas));
+          const blendedCanvasHeight = parseInt(getRatio(values.blendedCanvas, currentYOffset));
           objs.canvasA.classList.add('sticky-blend-canvas');
           objs.contextA.drawImage(
             values.imagesSrc[1],
@@ -427,9 +464,9 @@
           );
 
           if (scrollRatio >= values.blendedCanvas[2].end) {
-            const scaleCanvas = getRatio(scene, values.scale_canvas);
-            const caption_opacity_in = getRatio(scene, values.caption_opacity_in);
-            const caption_translate3d_in = getRatio(scene, values.caption_translate3d_in);
+            const scaleCanvas = getRatio(values.scale_canvas, currentYOffset);
+            const caption_opacity_in = getRatio(values.caption_opacity_in, currentYOffset);
+            const caption_translate3d_in = getRatio(values.caption_translate3d_in, currentYOffset);
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
             objs.canvasCaption.style.opacity = caption_opacity_in;
             objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
@@ -448,10 +485,9 @@
     }
   };
 
-  const getRatio = (scene, values, currentDelayedYOffset) => {
+  const getRatio = (values, currentYOffset) => {
     let rv;
-    const currentYOffset = currentDelayedYOffset || yOffset - prevScrollHeight;
-    const currentScrollHeight = scene.scrollHeight;
+    const currentScrollHeight = sceneInfo[currentScene].scrollHeight;
     const scrollRatio = currentYOffset / currentScrollHeight;
     if (values.length === 3) {
       rv = getPartRatio(currentYOffset, currentScrollHeight, values);
@@ -485,9 +521,11 @@
       const scene = sceneInfo[currentScene];
       const {objs, values} = scene;
       const currentDelayedYOffset = delayedYOffset - prevScrollHeight;
-
-      const currentImage = Math.round(getRatio(scene, values.imageSequence, currentDelayedYOffset));
+      currentImage = Math.round(getRatio(values.imageSequence, currentDelayedYOffset));
       if (values.imagesSrc[currentImage]) {
+        if (initImage) {
+          initImage = false;
+        }
         objs.context.drawImage(values.imagesSrc[currentImage], 0, 0);
       }
     }
@@ -506,13 +544,17 @@
 
   loadImages();
 
-  window.addEventListener('scroll', () => {
-    yOffset = window.pageYOffset;
-    setScrollLoop();
-    if (rafState === 'stop') {
-      loop();
-    }
-  });
+  window.addEventListener(
+    'scroll',
+    () => {
+      yOffset = window.pageYOffset;
+      setScrollLoop();
+      if (rafState === 'stop') {
+        loop();
+      }
+    },
+    {passive: true},
+  );
 
   window.addEventListener('resize', debounce(windowReLoad, 200));
   window.addEventListener('load', () => {
