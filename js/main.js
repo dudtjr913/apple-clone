@@ -162,7 +162,7 @@
       if (v.type === 'sticky') {
         v.scrollHeight = v.heightMultiple * window.innerHeight;
       } else {
-        v.scrollHeight = v.objs.container.offsetHeight;
+        v.scrollHeight = v.objs.container.offsetHeight * 1.5;
       }
       v.objs.container.style.height = `${v.scrollHeight}px`;
     });
@@ -261,6 +261,7 @@
 
   const setScrollLoop = () => {
     while (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      if (currentScene === 3) break;
       prevScrollHeight += sceneInfo[currentScene].scrollHeight;
       currentScene++;
     }
