@@ -6,7 +6,6 @@
   let currentScene = 0; // 현재 보고 있는 scene
   let prevScrollHeight = 0; // 보고 있는 scene 전까지의 높이
   let yOffset = 0; // pageYOffset
-  let changeScene = false;
   let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
 
   const sceneInfo = [
@@ -169,10 +168,14 @@
     let totalHeight = 0;
     for (let i = 0; i < sceneInfo.length; i++) {
       totalHeight += sceneInfo[i].scrollHeight;
-      if (totalHeight >= window.pageYOffset) {
+      if (totalHeight > window.pageYOffset) {
         currentScene = i;
         break;
       }
+    }
+
+    for (let i = 0; i < currentScene; i++) {
+      prevScrollHeight += sceneInfo[i].scrollHeight;
     }
     document.body.id = `scroll-scene-${currentScene}`;
 
@@ -254,27 +257,23 @@
   };
 
   const setScrollLoop = () => {
-    changeScene = false;
-    prevScrollHeight = 0;
-
-    for (let i = 0; i < currentScene; i++) {
-      prevScrollHeight += sceneInfo[i].scrollHeight;
-    }
-
-    if (delayedYOffset >= prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
-      changeScene = true;
+    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       currentScene++;
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    if (delayedYOffset <= prevScrollHeight) {
-      changeScene = true;
+    if (yOffset < prevScrollHeight) {
       if (currentScene === 0) return;
       currentScene--;
       document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    !changeScene && setAnimation();
+    prevScrollHeight = 0;
+    for (let i = 0; i < currentScene; i++) {
+      prevScrollHeight += sceneInfo[i].scrollHeight;
+    }
+
+    setAnimation();
   };
 
   const setAnimation = () => {
@@ -284,7 +283,7 @@
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
     const scrollRatio = currentYOffset / currentScrollHeight;
-    console.log(currentScene);
+    console.log(yOffset, prevScrollHeight);
 
     switch (currentScene) {
       case 0:
@@ -479,18 +478,14 @@
   const loop = () => {
     rafState = 'going';
     delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
-    if (!changeScene) {
-      if (currentScene === 0 || currentScene === 2) {
-        const scene = sceneInfo[currentScene];
-        const {objs, values} = scene;
-        const currentDelayedYOffset = delayedYOffset - prevScrollHeight;
+    if (currentScene === 0 || currentScene === 2) {
+      const scene = sceneInfo[currentScene];
+      const {objs, values} = scene;
+      const currentDelayedYOffset = delayedYOffset - prevScrollHeight;
 
-        const currentImage = Math.round(
-          getRatio(scene, values.imageSequence, currentDelayedYOffset),
-        );
-        if (values.imagesSrc[currentImage]) {
-          objs.context.drawImage(values.imagesSrc[currentImage], 0, 0);
-        }
+      const currentImage = Math.round(getRatio(scene, values.imageSequence, currentDelayedYOffset));
+      if (values.imagesSrc[currentImage]) {
+        objs.context.drawImage(values.imagesSrc[currentImage], 0, 0);
       }
     }
 
@@ -508,16 +503,13 @@
 
   loadImages();
 
-  window.addEventListener(
-    'scroll',
-    debounce(() => {
-      yOffset = window.pageYOffset;
-      setScrollLoop();
-      if (rafState === 'stop') {
-        loop();
-      }
-    }, 15),
-  );
+  window.addEventListener('scroll', () => {
+    yOffset = window.pageYOffset;
+    setScrollLoop();
+    if (rafState === 'stop') {
+      loop();
+    }
+  });
 
   window.addEventListener('resize', debounce(windowReLoad, 200));
   window.addEventListener('load', () => {
