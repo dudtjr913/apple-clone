@@ -257,16 +257,20 @@
   };
 
   const setScrollLoop = () => {
-    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+    while (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      prevScrollHeight += sceneInfo[currentScene].scrollHeight;
       currentScene++;
-      document.body.id = `scroll-scene-${currentScene}`;
     }
 
-    if (yOffset < prevScrollHeight) {
-      if (currentScene === 0) return;
+    while (yOffset < prevScrollHeight) {
+      prevScrollHeight -= sceneInfo[currentScene].scrollHeight;
+      if (currentScene === 0) break;
       currentScene--;
-      document.body.id = `scroll-scene-${currentScene}`;
     }
+
+    console.log(currentScene);
+
+    document.body.id = `scroll-scene-${currentScene}`;
 
     prevScrollHeight = 0;
     for (let i = 0; i < currentScene; i++) {
@@ -283,7 +287,6 @@
     const currentYOffset = yOffset - prevScrollHeight;
     const currentScrollHeight = scene.scrollHeight;
     const scrollRatio = currentYOffset / currentScrollHeight;
-    console.log(yOffset, prevScrollHeight);
 
     switch (currentScene) {
       case 0:
