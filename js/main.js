@@ -109,6 +109,7 @@
         canvasCaption: document.querySelector('.canvas-caption'),
         canvasA: document.querySelector('#canvas-image1'),
         contextA: document.querySelector('#canvas-image1').getContext('2d'),
+        footer: document.querySelector('.footer'),
       },
       values: {
         images: ['./images/blend-image-1.jpg', './images/blend-image-2.jpg'],
@@ -443,6 +444,9 @@
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
+        if (!objs.footer.classList.contains('hide')) {
+          objs.footer.classList.add('hide');
+        }
 
         if (scrollRatio <= values.rect1X[2].end) {
           objs.canvasCaption.style.opacity = 0;
@@ -469,6 +473,7 @@
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
             objs.canvasCaption.style.opacity = caption_opacity_in;
             objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
+            objs.footer.classList.remove('hide');
             if (scaleCanvas === values.scale_canvas[1]) {
               const calculatedMarginTop = scene.scrollHeight * 0.45;
               objs.canvasA.classList.remove('sticky-blend-canvas');

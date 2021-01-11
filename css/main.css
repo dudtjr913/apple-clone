@@ -181,7 +181,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 
 #scroll-section-3 .canvas-caption {
   color: #888;
-  margin: 0 auto;
+  margin: -8em auto 0;
   padding: 0 1rem;
   max-width: 1000px;
   font-size: 1.2rem;
@@ -195,6 +195,11 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   color: white;
   background: darkorange;
   font-weight: 900;
+  margin-top: 50px;
+}
+
+.hide {
+  display: none;
 }
 
 @media (min-width: 1024px) {
