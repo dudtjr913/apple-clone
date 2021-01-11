@@ -187,6 +187,16 @@
     sceneInfo[2].objs.canvas.style.transform = `translate3d(-50%, -50%, 0) scale(${heightRatio})`;
 
     setCanvasAnimationInit(sceneInfo[3].scrollHeight, sceneInfo[3].values, sceneInfo[3].objs);
+
+    // 마지막 scene의 마지막 문단의 절대위치를 구해서 footer에 margin-top을 주기 위한 값
+    const footerMarginTop =
+      pageYOffset +
+      sceneInfo[3].objs.canvasCaption.getBoundingClientRect().top +
+      sceneInfo[3].scrollHeight * 0.45 +
+      sceneInfo[3].objs.canvasCaption.offsetHeight -
+      document.body.offsetHeight +
+      150;
+    document.querySelector('.footer').style.marginTop = `${footerMarginTop}px`;
   };
 
   // 스크롤을 내리면 스크롤에 따라 점점 커지거나 작아지는 캔버스를 초기 셋팅하는 함수
@@ -452,9 +462,6 @@
         objs.contextA.drawImage(values.imagesSrc[0], 0, 0);
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
-        if (!objs.footer.classList.contains('hide')) {
-          objs.footer.classList.add('hide');
-        }
 
         if (scrollRatio <= values.rect1X[2].end) {
           objs.canvasCaption.style.opacity = 0;
@@ -481,7 +488,6 @@
             objs.canvasA.style.transform = `scale(${scaleCanvas})`;
             objs.canvasCaption.style.opacity = caption_opacity_in;
             objs.canvasCaption.style.transform = `translate3d(0, ${caption_translate3d_in}%, 0)`;
-            objs.footer.classList.remove('hide');
             if (scaleCanvas === values.scale_canvas[1]) {
               const calculatedMarginTop = scene.scrollHeight * 0.45;
               objs.canvasA.classList.remove('sticky-blend-canvas');
