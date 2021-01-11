@@ -299,6 +299,14 @@
       lastSceneInit(0);
     }
 
+    // 특정 위치부터 header 고정
+    const $stickyNav = document.querySelector('.local-nav');
+    if (yOffset > 44 && !$stickyNav.classList.contains('sticky')) {
+      $stickyNav.classList.add('sticky');
+    } else if (yOffset <= 44) {
+      $stickyNav.classList.remove('sticky');
+    }
+
     switch (currentScene) {
       case 0:
         const canvas_opacity_out = getRatio(values.canvas_opacity_out, currentYOffset);

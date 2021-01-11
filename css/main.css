@@ -48,6 +48,30 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   display: block;
 }
 
+.header-nav .sticky {
+  position: fixed;
+  top: 0px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: saturate(180%) blur(15px);
+}
+
+.global-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.local-nav {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 100%;
+  z-index: 11;
+  border-bottom: 1px solid #ddd;
+}
+
 .global-nav-links,
 .local-nav-links {
   max-width: 1000px;
@@ -75,14 +99,6 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 .local-nav-links a:not(.product-title) {
   font-size: 0.8rem;
   margin-left: 2em;
-}
-
-.header-nav {
-  border-bottom: 1px solid #ddd;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
 }
 
 .scroll-section {
@@ -181,7 +197,7 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
 
 #scroll-section-3 .canvas-caption {
   color: #888;
-  margin: -8em auto 0;
+  margin: -4em auto 0;
   padding: 0 1rem;
   max-width: 1000px;
   font-size: 1.2rem;
