@@ -1,5 +1,5 @@
 (() => {
-  const acc = 0.2; // 부드럽게 스크롤 하기 위한 감속 비율
+  const acc = 0.1; // 부드럽게 스크롤 하기 위한 감속 비율
   let delayedYOffset = 0; // 부드럽게 스크롤 하기 위한 감속이 적용된 yOffset
   let rafValue = 0; // requestAnimationFrame의 값(cancel을 하기 위함)
   let rafState = 'stop'; // requestAnimationFrame의 상태(stop or going)
@@ -578,23 +578,33 @@
     window.location.reload();
   };
 
+  // 이미지 로드하기
   loadImages();
 
-  window.addEventListener(
-    'scroll',
-    () => {
-      yOffset = window.pageYOffset;
-      setScrollLoop();
-      if (rafState === 'stop') {
-        loop();
-      }
-    },
-    {passive: true},
-  );
-
-  window.addEventListener('resize', debounce(windowReLoad, 200));
   window.addEventListener('load', () => {
+    // 레이아웃 설정 및 첫 화면 그리기
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
+
+    // 로딩창 제거
+    document.querySelector('.loading').classList.remove('before-loaded');
+    document.querySelector('.loading').addEventListener('transitionend', (e) => {
+      document.body.removeChild(e.currentTarget);
+    });
+
+    // 스크롤 이벤트 시작
+    window.addEventListener(
+      'scroll',
+      () => {
+        yOffset = window.pageYOffset;
+        setScrollLoop();
+        if (rafState === 'stop') {
+          loop();
+        }
+      },
+      {passive: true},
+    );
   });
+
+  window.addEventListener('resize', debounce(windowReLoad, 200)); // resize시 새로고침
 })();

@@ -21,6 +21,57 @@ a {
   color: rgb(29, 29, 31);
 }
 
+@keyframes rotate-circle {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes get-loading-circle {
+  0% {
+    stroke-dashoffset: 157;
+  }
+  80% {
+    stroke-dashoffset: -150;
+  }
+  100% {
+    stroke-dashoffset: -157;
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  background-color: #f3f3f3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.before-loaded {
+  opacity: 1;
+}
+
+.loading-circle {
+  width: 54px;
+  height: 54px;
+  animation: rotate-circle 3s infinite;
+}
+
+.loading-circle circle {
+  stroke: #6e6e73;
+  stroke-width: 4;
+  fill: transparent;
+  stroke-dasharray: 157;
+  animation: get-loading-circle 1.3s infinite;
+}
+
 .main .sticky-elem {
   position: fixed;
   left: 0;
@@ -208,9 +259,9 @@ body#scroll-scene-3 #scroll-section-3 .sticky-elem {
   justify-content: center;
   align-items: center;
   height: 7rem;
-  color: white;
-  background: darkorange;
-  font-weight: 900;
+  color: #1d1d1f;
+  background: #f5f5f7;
+  font-weight: 600;
 }
 
 @media (min-width: 1024px) {
