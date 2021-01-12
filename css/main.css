@@ -25,6 +25,10 @@ a {
   color: rgb(29, 29, 31);
 }
 
+.container {
+  overflow: hidden;
+}
+
 @keyframes rotate-circle {
   100% {
     transform: rotate(360deg);
