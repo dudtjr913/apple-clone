@@ -9,6 +9,7 @@
   let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
   let currentImage = 0; // 현재 화면에 그려지는 이미지
   let initImage = false; // 다른 scene의 이미지가 초기화 되었는지 알려주기 위함
+  let once = false;
 
   const sceneInfo = [
     {
@@ -57,6 +58,7 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-1'),
+        content: document.querySelector('#scroll-section-1 .description'),
       },
     },
     {
@@ -163,7 +165,7 @@
       if (v.type === 'sticky') {
         v.scrollHeight = v.heightMultiple * window.innerHeight;
       } else {
-        v.scrollHeight = v.objs.container.offsetHeight * 1.5;
+        v.scrollHeight = v.objs.content.offsetHeight + window.innerHeight * 0.5;
       }
       v.objs.container.style.height = `${v.scrollHeight}px`;
     });
@@ -201,7 +203,7 @@
 
   // 스크롤을 내리면 스크롤에 따라 점점 커지거나 작아지는 캔버스를 초기 셋팅하는 함수
   const setCanvasAnimationInit = (scrollHeight, values, objs) => {
-    const canvasWidthRatio = document.body.offsetWidth / objs.canvasA.width;
+    const canvasWidthRatio = window.innerWidth / objs.canvasA.width;
     const canvasHeightRatio = window.innerHeight / objs.canvasA.height;
     objs.canvasA.classList.remove('sticky-blend-canvas');
 
@@ -242,13 +244,13 @@
       parseInt(values.rect1X[0]),
       0,
       parseInt(whiteRectWidth),
-      recalculatedHeight,
+      objs.canvasA.height,
     );
     objs.contextA.fillRect(
       parseInt(values.rect2X[0]),
       0,
       parseInt(whiteRectWidth),
-      recalculatedHeight,
+      objs.canvasA.height,
     );
 
     objs.canvasA.style.top = `-${canvasTop}px`;
@@ -463,7 +465,7 @@
         objs.canvasA.style.transform = `scale(${canvasScaleRatio})`;
         objs.canvasA.style.marginTop = 0;
 
-        if (scrollRatio <= values.rect1X[2].end) {
+        if (scrollRatio < values.rect1X[2].end) {
           objs.canvasCaption.style.opacity = 0;
           lastSceneInit(currentYOffset);
         } else {
@@ -540,13 +542,13 @@
       canvas1_in,
       0,
       parseInt(values.canvasA.whiteRectWidth),
-      values.canvasA.height,
+      objs.canvasA.height,
     );
     objs.contextA.fillRect(
       canvas2_in,
       0,
       parseInt(values.canvasA.whiteRectWidth),
-      values.canvasA.height,
+      objs.canvasA.height,
     );
   };
 
@@ -587,6 +589,7 @@
     document.querySelector('.loading').addEventListener('transitionend', (e) => {
       document.body.removeChild(e.currentTarget);
     });
+
     // 레이아웃 설정 및 첫 화면 그리기
     setLayout();
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
