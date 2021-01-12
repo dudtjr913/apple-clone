@@ -12,6 +12,10 @@ body {
   overflow-x: hidden;
 }
 
+body.before-loaded {
+  overflow: hidden;
+}
+
 p {
   line-height: 1.6;
 }
@@ -54,7 +58,7 @@ a {
   transition: 0.5s;
 }
 
-.before-loaded {
+.before-loaded .loading {
   opacity: 1;
 }
 

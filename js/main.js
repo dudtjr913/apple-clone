@@ -587,7 +587,7 @@
     sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
 
     // 로딩창 제거
-    document.querySelector('.loading').classList.remove('before-loaded');
+    document.body.classList.remove('before-loaded');
     document.querySelector('.loading').addEventListener('transitionend', (e) => {
       document.body.removeChild(e.currentTarget);
     });
