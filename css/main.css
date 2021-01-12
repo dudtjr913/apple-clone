@@ -16,6 +16,10 @@ body.before-loaded {
   overflow: hidden;
 }
 
+.before-loaded .container {
+  display: none;
+}
+
 p {
   line-height: 1.6;
 }

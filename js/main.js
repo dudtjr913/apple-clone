@@ -582,15 +582,14 @@
   loadImages();
 
   window.addEventListener('load', () => {
-    // 레이아웃 설정 및 첫 화면 그리기
-    setLayout();
-    sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
-
     // 로딩창 제거
     document.body.classList.remove('before-loaded');
     document.querySelector('.loading').addEventListener('transitionend', (e) => {
       document.body.removeChild(e.currentTarget);
     });
+    // 레이아웃 설정 및 첫 화면 그리기
+    setLayout();
+    sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
 
     // 스크롤 이벤트 시작
     window.addEventListener(
