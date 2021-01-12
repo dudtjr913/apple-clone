@@ -9,7 +9,6 @@
   let canvasScaleRatio; // 마지막 스크린의 캔버스 scale비율
   let currentImage = 0; // 현재 화면에 그려지는 이미지
   let initImage = false; // 다른 scene의 이미지가 초기화 되었는지 알려주기 위함
-  let once = false;
 
   const sceneInfo = [
     {
@@ -140,6 +139,7 @@
     };
   };
 
+  // 이미지 로드하기
   const loadImages = () => {
     for (let i = 0; i < sceneInfo[0].values.totalImageCount; i++) {
       const $imgElem = new Image();
@@ -160,15 +160,20 @@
     }
   };
 
-  const setLayout = () => {
+  // 로드되기 전에 미리 높이 셋팅 - 미리 셋팅하지 않으면 스크롤이 이상한 곳으로 가는 것 방지
+  const setSceneHeight = () => {
     sceneInfo.forEach((v) => {
       if (v.type === 'sticky') {
         v.scrollHeight = v.heightMultiple * window.innerHeight;
       } else {
-        v.scrollHeight = v.objs.content.offsetHeight + window.innerHeight * 0.5;
+        v.scrollHeight = v.objs.content.offsetHeight * 1.5;
       }
       v.objs.container.style.height = `${v.scrollHeight}px`;
     });
+  };
+
+  const setLayout = () => {
+    setSceneHeight();
 
     let totalHeight = 0;
     for (let i = 0; i < sceneInfo.length; i++) {
@@ -580,33 +585,47 @@
     window.location.reload();
   };
 
-  // 이미지 로드하기
-  loadImages();
-
   window.addEventListener('load', () => {
+    // 미리 scene들의 높이 설정
+    setSceneHeight();
     // 로딩창 제거
     document.body.classList.remove('before-loaded');
-    document.querySelector('.loading').addEventListener('transitionend', (e) => {
+    document.body.querySelector('.loading').addEventListener('transitionend', (e) => {
       document.body.removeChild(e.currentTarget);
     });
 
-    // 레이아웃 설정 및 첫 화면 그리기
-    setLayout();
-    sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
+    // 레이아웃이 모두 설정될 때까지 기다리기
+    setTimeout(() => {
+      // 레이아웃 설정 및 첫 화면 그리기
+      setLayout();
+      sceneInfo[0].objs.context.drawImage(sceneInfo[0].values.imagesSrc[0], 0, 0);
 
-    // 스크롤 이벤트 시작
-    window.addEventListener(
-      'scroll',
-      () => {
-        yOffset = window.pageYOffset;
-        setScrollLoop();
-        if (rafState === 'stop') {
-          loop();
+      // 새로고침 후 스크롤 강제로 하기
+      let count = 0;
+      const intervalValue = setInterval(() => {
+        scrollTo(0, window.pageYOffset + 5);
+        count++;
+        if (count >= 5) {
+          clearInterval(intervalValue);
         }
-      },
-      {passive: true},
-    );
+      }, 20);
+
+      // 스크롤 이벤트 시작
+      window.addEventListener(
+        'scroll',
+        () => {
+          yOffset = window.pageYOffset;
+          setScrollLoop();
+          if (rafState === 'stop') {
+            loop();
+          }
+        },
+        {passive: true},
+      );
+    }, 100);
   });
 
   window.addEventListener('resize', debounce(windowReLoad, 200)); // resize시 새로고침
+
+  loadImages();
 })();
